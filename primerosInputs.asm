@@ -342,6 +342,10 @@ convert_loop:
     cmp bl, '$'           ; Verificar el final de la cadena
     je done_conversion    ; Si es el final, terminar
     
+    ;ARREGLAR ESTA PARTE, LA MULTIPLICACION
+    ;DEBE HACERSE EN PARTE ALTA Y BAJA Y LUEGO
+    ;GUARDAR EL ACUMULADO
+    
     mov cx, 10            ; Cargar el multiplicador en CX
     mul cx                ; Multiplicar AX por CX, resultado en AX
     jmp convert_loop      ; Continuar con el siguiente car�cter
@@ -351,7 +355,7 @@ done_conversion:
 
 
 decimal_founded:
-    mov cx, 10            ; Cargar el multiplicador en CX
+    mov cx, 100            ; Cargar el multiplicador en CX
     mul cx                ; Multiplicar AX por CX, resultado en AX
     inc si
     jmp convert_loop      ; Continuar con el siguiente car�cter
