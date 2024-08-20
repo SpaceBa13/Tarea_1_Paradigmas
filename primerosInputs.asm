@@ -231,7 +231,9 @@ cuadrado:
 
     ; Convertir el buffer de entrada a n�mero entero
     lea si, input_buffer
-    call STR_TO_INT
+    call STR_TO_INT        
+    ;Una vez aqui el numero leido estara divido en 2 partes, la parte alta en DX y la parte baja en AX
+    
 
     ; Aqu� puedes usar el n�mero entero en el registro AX (o en otro registro si lo prefieres)
         
@@ -335,11 +337,13 @@ convert_loop:
 
     ; Multiplicar AX por 10 (base decimal)
     add ax, bx            ; Guardar el valor actual de AX en DX
+    inc si                ; Mover al siguiente car�cter
+    mov bl, [si]          ; Cargar el siguiente car�cter (En el caso de que sea el ultimo)
+    cmp bl, '$'           ; Verificar el final de la cadena
+    je done_conversion    ; Si es el final, terminar
+    
     mov cx, 10            ; Cargar el multiplicador en CX
     mul cx                ; Multiplicar AX por CX, resultado en AX
-
-
-    inc si                ; Mover al siguiente car�cter
     jmp convert_loop      ; Continuar con el siguiente car�cter
 
 done_conversion:
