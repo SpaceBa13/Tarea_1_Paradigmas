@@ -14,6 +14,7 @@ org 100h
     option7 db '7. Para Circulo.$', 0Dh, 0Ah, '$'
     option8 db '8. Para Trapecio.$', 0Dh, 0Ah, '$'
     option9 db '9. Para Paralelogramo.$', 0Dh, 0Ah, '$'
+    close   db '0. Para terminar programa.$', 0Dh, 0Ah, '$'
     invalid db 'Opcion invalida. Por favor seleccione una opcion valida.$', 0Dh, 0Ah, '$'
     
     
@@ -27,6 +28,7 @@ org 100h
     circle db 'Has seleccionado Circulo.$', 0Dh, 0Ah, '$'
     trapezoid db 'Has seleccionado Trapecio.$', 0Dh, 0Ah, '$'
     parallelogram db 'Has seleccionado Paralelogramo.$', 0Dh, 0Ah, '$'
+    finish  db 'Programa finalizado.$', 0Dh, 0Ah, '$'
     
 .code
 main proc
@@ -34,6 +36,7 @@ main proc
     mov ax, @data
     mov ds, ax
 
+start:
     ; Mostrar mensaje de bienvenida
     mov ah, 09h
     lea dx, menu
@@ -107,6 +110,12 @@ main proc
     int 21h
     lea dx, newline
     int 21h
+    
+    mov ah, 09h
+    lea dx, close
+    int 21h
+    lea dx, newline
+    int 21h
 
     ; Leer opcion del usuario
     mov ah, 01h       ; Funcion para leer un caracter del teclado
@@ -137,6 +146,11 @@ main proc
     je trapezoid_option
     cmp bl, '9'
     je parallelogram_option
+    cmp bl, '9'
+    je parallelogram_option
+    cmp bl, '0'
+    je end_program
+    
 
     ; Opcion invalida
     mov ah, 09h
@@ -146,64 +160,114 @@ main proc
     mov ah, 09h
     lea dx, newline
     int 21h
-    jmp end_program
+    jmp start
 
 square_option:
     mov ah, 09h
     lea dx, square
     int 21h
-    jmp end_program
+    
+    mov ah, 09h
+    lea dx, newline
+    int 21h
+    
+    jmp start
 
 rectangle_option:
     mov ah, 09h
     lea dx, rectangle
     int 21h
-    jmp end_program
+    
+    mov ah, 09h
+    lea dx, newline
+    int 21h
+    
+    jmp start
 
 triangle_option:
     mov ah, 09h
     lea dx, triangle
     int 21h
-    jmp end_program
+    
+    mov ah, 09h
+    lea dx, newline
+    int 21h
+    
+    jmp start
 
 rhombus_option:
     mov ah, 09h
     lea dx, rhombus
     int 21h
-    jmp end_program
+    
+    mov ah, 09h
+    lea dx, newline
+    int 21h
+    
+    jmp start
 
 pentagon_option:
     mov ah, 09h
     lea dx, pentagon
     int 21h
-    jmp end_program
+    
+    mov ah, 09h
+    lea dx, newline
+    int 21h
+    
+    jmp start
 
 hexagon_option:
     mov ah, 09h
     lea dx, hexagon
     int 21h
-    jmp end_program
+    
+    mov ah, 09h
+    lea dx, newline
+    int 21h
+    
+    jmp start
 
 circle_option:
     mov ah, 09h
     lea dx, circle
     int 21h
-    jmp end_program
+    
+    mov ah, 09h
+    lea dx, newline
+    int 21h
+    
+    jmp start
 
 trapezoid_option:
     mov ah, 09h
     lea dx, trapezoid
     int 21h
-    jmp end_program
+    
+    mov ah, 09h
+    lea dx, newline
+    int 21h
+    
+    jmp start
 
 parallelogram_option:
     mov ah, 09h
     lea dx, parallelogram
     int 21h
-    jmp end_program
+    
+    mov ah, 09h
+    lea dx, newline
+    int 21h
+    
+    jmp start
 
 end_program:
     ; Termina el programa
+    
+    mov ah, 09h
+    lea dx, finish
+    int 21h
+    
     mov ah, 4Ch
     int 21h
 main endp
