@@ -35,6 +35,7 @@ org 100h
     
     ; Mensajes para la colecta de datos
     lado db 'Ingresa el valor del lado: $', 0Dh, 0Ah, '$'
+    lado2 db 'Ingresa el valor del lado2: $', 0Dh, 0Ah, '$'
     radio db 'Ingresa el valor del radio: $', 0Dh, 0Ah, '$'
      
     ;Mensajes de error
@@ -52,6 +53,16 @@ org 100h
     n1_ent_baja DW ?            ; Parte entera del numero 1 (Parte baja)
     n1_dec_alta DW ?            ; Parte decimal del numero 1 (Parte alta)
     n1_dec_baja DW ?            ; Parte decimal del numero 1 (Parte baja)
+  
+    lado1_ent_alta DW ? 
+    lado1_ent_baja DW ? 
+    lado1_dec_alta DW ? 
+    lado1_dec_baja DW ?  
+    
+    lado2_ent_alta DW ? 
+    lado2_ent_baja DW ? 
+    lado2_dec_alta DW ? 
+    lado2_dec_baja DW ?     
     
     n2_ent_alta DW ?            ; Parte entera del numero 2 (Parte alta)
     n2_ent_baja DW ?            ; Parte entera del numero 2 (Parte baja)
@@ -240,6 +251,7 @@ rectangle_option:
     mov ah, 09h
     lea dx, rectangle
     int 21h
+    jmp RECTANGULO
     
     mov ah, 09h
     lea dx, newline
@@ -334,7 +346,7 @@ end_program:
     
     mov ah, 4Ch
     int 21h 
-    
+
 
 CUADRADO:
     lea dx, newline
@@ -401,7 +413,109 @@ CUADRADO:
     
     ; Terminar el programa
     jmp end_program
+       
 
+  
+    
+RECTANGULO:
+    lea dx, newline
+    int 21h
+    lea dx, lado
+    int 21h
+     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+
+    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
+    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
+    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
+     
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+                              
+    MOV lado1_ent_baja, AX                          
+    MOV lado1_dec_baja, DX 
+     
+    ;reinicia el buffer------------------------------------                        
+    mov ah, 09h
+    lea dx, newline
+    int 21h
+    mov ah, 09h
+    lea dx, lado2
+    int 21h     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+    ;reinicia el buffer------------------------------------                              
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+                              
+    MOV lado2_ent_baja, AX                          
+    MOV lado2_dec_baja, DX   
+                                
+    MOV n2_ent_baja, AX    
+    MOV n2_dec_baja, DX 
+      
+    MOV AX, lado1_ent_baja                           
+    MOV DX, lado1_dec_baja                          
+                              
+    ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX 
+    
+    
+
+    ;Se hace la multiplicacion
+    CALL MULTIPLICACION
+    
+    ; En este punto las variables estan almacenadas de esta forma:  
+    ; AX, resultado_f_ent_baja
+    ; DX, resultado_f_ent_alta
+    ; CX, resultado_f_dec_baja
+    
+    MOV area_ent_alta, DX 
+    MOV area_ent_baja, AX
+    MOV area_dec_baja, CX   
+    
+    ;Ya funciona el area del rec___________________________
+    
+    ; Se vuelve al numero del buffer
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    
+    ;Se mueven a n1 y n2 para realizar la multiplicacion (Perimetro = L*4)
+    MOV n1_ent_baja, AX
+    MOV n2_ent_baJa, 4
+    
+    MOV n1_dec_baja, DX
+    MOV n2_dec_baja, 0
+    
+    ;Se hace la multiplicacion
+    CALL MULTIPLICACION
+    
+    MOV perimetro_ent_alta, DX 
+    MOV perimetro_ent_baja, AX
+    MOV perimetro_dec_baja, CX
+    
+    ;Pasos para retonar el numero.....
+      
+    
+    ; Terminar el programa
+    jmp end_program
+    
 
 CIRCULO:
     lea dx, newline
