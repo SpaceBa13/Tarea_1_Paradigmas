@@ -37,7 +37,12 @@ org 100h
     lado db 'Ingresa el valor del lado: $', 0Dh, 0Ah, '$'
      
     ;Mensajes de error
-    mas_de_un_punto_decimal db 'Otro punto decinmal??? :v $', 0Dh, 0Ah, '$'
+    mas_de_un_punto_decimal db 'Otro punto decinmal??? :v $', 0Dh, 0Ah, '$'  
+    
+    ;Variables para el uso de los lados
+    var1_low dw 0    ; Almacenar la parte baja del resultado
+    var1_high dw 0   ; Almacenar la parte alta del resultado
+    temp_1_high dw 0     ; Almacenar temporalmente la parte alta
      
 .code
 main proc
@@ -175,17 +180,15 @@ square_option:
     mov ah, 09h
     lea dx, square
     int 21h
-<<<<<<< HEAD
     jmp cuadrado
-=======
     
     mov ah, 09h
     lea dx, newline
     int 21h
     
-    jmp start
->>>>>>> 5a6c69ca4f8d5a82a32e11a9a240a95af56c47b5
-
+    jmp start                                      
+    
+    
 rectangle_option:
     mov ah, 09h
     lea dx, rectangle
@@ -393,7 +396,8 @@ DONE:
 
 STR_TO_INT:
     xor ax, ax            ; Limpiar AX para usarlo como el n�mero entero
-    mov cx, 10            ; Base 10 para la conversi�n
+    mov cx, 10            ; Base 10 para la conversi�n 
+    
 convert_loop:
     mov bl, [si]          ; Cargar el siguiente car�cter
     cmp bl, '$'           ; Verificar el final de la cadena
@@ -411,7 +415,7 @@ convert_loop:
     jmp convert_loop      ; Continuar con el siguiente car�cter
 
 done_conversion:
-    ret
+    ret 
 
 
 decimal_founded:
