@@ -35,15 +35,62 @@ org 100h
     
     ; Mensajes para la colecta de datos
     lado db 'Ingresa el valor del lado: $', 0Dh, 0Ah, '$'
+    radio db 'Ingresa el valor del radio: $', 0Dh, 0Ah, '$'
      
     ;Mensajes de error
-    mas_de_un_punto_decimal db 'Otro punto decinmal??? :v $', 0Dh, 0Ah, '$'  
+    mas_de_un_punto_decimal db 'Otro punto decinmal??? :v $', 0Dh, 0Ah, '$' 
     
-    ;Variables para el uso de los lados
-    var1_low dw 0    ; Almacenar la parte baja del resultado
-    var1_high dw 0   ; Almacenar la parte alta del resultado
-    temp_1_high dw 0     ; Almacenar temporalmente la parte alta
-     
+    ;Variables para la recoleccion de datos del buffer
+    n_buffer_ent_alta DW ?            ; Parte entera del numero 1 (Parte alta)
+    n_buffer_ent_baja DW ?            ; Parte entera del numero 1 (Parte baja)
+    n_buffer_dec_alta DW ?            ; Parte decimal del numero 1 (Parte alta)
+    n_buffer_dec_baja DW ?            ; Parte decimal del numero 1 (Parte baja 
+    
+    
+    ;Variables para el almacenamiento de los numeros recolectados
+    n1_ent_alta DW ?            ; Parte entera del numero 1 (Parte alta)
+    n1_ent_baja DW ?            ; Parte entera del numero 1 (Parte baja)
+    n1_dec_alta DW ?            ; Parte decimal del numero 1 (Parte alta)
+    n1_dec_baja DW ?            ; Parte decimal del numero 1 (Parte baja)
+    
+    n2_ent_alta DW ?            ; Parte entera del numero 2 (Parte alta)
+    n2_ent_baja DW ?            ; Parte entera del numero 2 (Parte baja)
+    n2_dec_alta DW ?            ; Parte decimal del numero 2 (Parte alta)
+    n2_dec_baja DW ?            ; Parte decimal del numero 2 (Parte baja)
+    
+    
+    ;Variables para almacenar la multiplicacion del n1 por el entero de n2
+    resultado_1_ent_alta DW ?   ; Parte entera del numero resultante (Parte alta)
+    resultado_1_ent_baja DW ?   ; Parte entera del numero resultante (Parte baja)
+    resultado_1_dec_alta DW ?   ; Parte decimal del numero resultante (Parte alta)
+    resultado_1_dec_baja DW ?   ; Parte decimal del numero resultante (Parte baja)
+    
+    ;Variables para almacenar la multiplicacion del n1 por el decimal de n2
+    resultado_2_ent_alta DW ?   ; Parte entera del numero resultante (Parte alta)
+    resultado_2_ent_baja DW ?   ; Parte entera del numero resultante (Parte baja)
+    resultado_2_dec_alta DW ?   ; Parte decimal del numero resultante (Parte alta)
+    resultado_2_dec_baja DW ?   ; Parte decimal del numero resultante (Parte baja)
+    
+    ;Resultado combinado de la multiplicacion 
+    resultado_f_ent_alta DW ?   ; Parte entera del numero resultante (Parte alta)
+    resultado_f_ent_baja DW ?   ; Parte entera del numero resultante (Parte baja)
+    resultado_f_dec_alta DW ?   ; Parte decimal del numero resultante (Parte alta)
+    resultado_f_dec_baja DW ?   ; Parte decimal del numero resultante (Parte baja)
+    
+    ;Variables para el almacenamiento del area y perimetro
+    area_ent_alta DW ?            ; Parte entera del area (Parte alta)
+    area_ent_baja DW ?            ; Parte entera del area  (Parte baja)
+    area_dec_alta DW ?            ; Parte decimal del area  (Parte alta)
+    area_dec_baja DW ?            ; Parte decimal del area  (Parte baja)
+    
+    perimetro_ent_alta DW ?            ; Parte entera del area (Parte alta)
+    perimetro_ent_baja DW ?            ; Parte entera del area  (Parte baja)
+    perimetro_dec_alta DW ?            ; Parte decimal del area  (Parte alta)
+    perimetro_dec_baja DW ?            ; Parte decimal del area  (Parte baja)
+    
+
+    
+       
 .code
 main proc
     ; Inicializa el segmento de datos
@@ -180,7 +227,7 @@ square_option:
     mov ah, 09h
     lea dx, square
     int 21h
-    jmp cuadrado
+    jmp CUADRADO
     
     mov ah, 09h
     lea dx, newline
@@ -248,6 +295,7 @@ circle_option:
     mov ah, 09h
     lea dx, circle
     int 21h
+    JMP CIRCULO
     
     mov ah, 09h
     lea dx, newline
@@ -288,7 +336,7 @@ end_program:
     int 21h 
     
 
-cuadrado:
+CUADRADO:
     lea dx, newline
     int 21h
     lea dx, lado
@@ -304,8 +352,128 @@ cuadrado:
     lea si, input_buffer
     call STR_TO_INT
 
-    ; Aqu� puedes usar el n�mero entero en el registro AX (o en otro registro si lo prefieres)
-        
+    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
+    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
+    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
+     
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    
+    ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
+    MOV n1_ent_baja, AX
+    MOV n2_ent_baJa, AX
+    
+    MOV n1_dec_baja, DX
+    MOV n2_dec_baja, DX
+    
+    ;Se hace la multiplicacion
+    CALL MULTIPLICACION
+    
+    ; En este punto las variables estan almacenadas de esta forma:  
+    ; AX, resultado_f_ent_baja
+    ; DX, resultado_f_ent_alta
+    ; CX, resultado_f_dec_baja
+    
+    MOV area_ent_alta, DX 
+    MOV area_ent_baja, AX
+    MOV area_dec_baja, CX
+    
+    ; Se vuelve al numero del buffer
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    
+    ;Se mueven a n1 y n2 para realizar la multiplicacion (Perimetro = L*4)
+    MOV n1_ent_baja, AX
+    MOV n2_ent_baJa, 4
+    
+    MOV n1_dec_baja, DX
+    MOV n2_dec_baja, 0
+    
+    ;Se hace la multiplicacion
+    CALL MULTIPLICACION
+    
+    MOV perimetro_ent_alta, DX 
+    MOV perimetro_ent_baja, AX
+    MOV perimetro_dec_baja, CX
+    
+    ;Pasos para retonar el numero.....
+      
+    
+    ; Terminar el programa
+    jmp end_program
+
+
+CIRCULO:
+    lea dx, newline
+    int 21h
+    lea dx, radio
+    int 21h
+     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+
+    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
+    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
+    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
+     
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    
+    ;Se mueven a n1 y n2 para realizar la multiplicacion (Perimetro = 2pi*r)
+    MOV n1_ent_baja, AX
+    MOV n2_ent_baJa, 6   ;Entero de pi por 2
+    
+    MOV n1_dec_baja, DX
+    MOV n2_dec_baja, 28  ;Decimal de pi por 2
+    
+    ;Se hace la multiplicacion
+    CALL MULTIPLICACION
+    
+    ; En este punto las variables estan almacenadas de esta forma:  
+    ; AX, resultado_f_ent_baja
+    ; DX, resultado_f_ent_alta
+    ; CX, resultado_f_dec_baja
+    
+    MOV perimetro_ent_alta, DX 
+    MOV perimetro_ent_baja, AX
+    MOV perimetro_dec_baja, CX
+    
+     
+    ; Se vuelve al numero del buffer
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    
+    ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = pi*r^2)
+    ;En esta parte se realiza r^2
+    MOV n1_ent_baja, AX
+    MOV n2_ent_baJa, AX
+    
+    MOV n1_dec_baja, DX
+    MOV n2_dec_baja, DX
+    
+    ;Se hace la multiplicacion
+    CALL MULTIPLICACION
+    
+    MOV n1_ent_alta, DX 
+    MOV n1_ent_baja, AX
+    MOV n1_dec_baja, CX
+    
+    MOV n2_ent_baja, 3
+    MOV n2_dec_baja, 14
+    
+    ;Se hace la multiplicacion
+    CALL MULTIPLICACION
+    
+    MOV area_ent_alta, DX 
+    MOV area_ent_baja, AX
+    MOV area_dec_baja, CX
     
     ; Terminar el programa
     jmp end_program
@@ -415,14 +583,128 @@ convert_loop:
     jmp convert_loop      ; Continuar con el siguiente car�cter
 
 done_conversion:
+    MOV cx, 10            ; Cargar el multiplicador en CX
+    DIV cx                ; Multiplicar AX por CX, resultado en AX
+    MOV n_buffer_dec_baja, AX
+    XOR AX, AX
     ret 
 
 
 decimal_founded:
-    mov cx, 10            ; Cargar el multiplicador en CX
-    mul cx                ; Multiplicar AX por CX, resultado en AX
-    inc si
+    MOV cx, 10            ; Cargar el multiplicador en CX
+    DIV cx                ; Multiplicar AX por CX, resultado en AX
+    INC si
+    MOV n_buffer_ent_baja, AX
+    XOR AX, AX
     jmp convert_loop      ; Continuar con el siguiente car�cter
+
+
+
+
+MULTIPLICACION:
+    ;Parte 0 Limpliar las variables de resultado
+    MOV resultado_f_ent_alta, 0
+    MOV resultado_f_ent_baja, 0
+    MOV resultado_f_dec_alta, 0
+    MOV resultado_f_dec_baja, 0
+    
+    ;Parte 1 de la multiplicacion (n1 por el entero de n2)
+
+    ; Multiplicar la parte entera por el factor
+    MOV AX, n1_ent_baja                 ; Cargar la parte entera en AX
+    MOV BX, n2_ent_baja                 ; Cargar el factor en BX
+    MUL BX                              ; Multiplicar AX (intPart) por BX (factor)
+    MOV resultado_1_ent_baja, AX        ; Guardar el resultado en 'intResult'
+    ADD resultado_1_ent_alta, DX
+    
+    ;Para la parte alta del numero
+    MOV AX, n1_ent_alta
+    MUL BX
+    MOV BX, 10000
+    MUL BX
+    ;Se guardara la parte alta en DX que deberemos sumar con la parte alta anterior
+    ;Mientras que la parte baja se guardara en AX y debemos sumarla con el anterior
+    ADD resultado_1_ent_baja, AX
+    ADD resultado_1_ent_alta, DX
+
+    ; Multiplicar la parte decimal por el factor
+    MOV AX, n1_dec_baja                 ; Cargar la parte decimal en AX
+    MOV BX, n2_ent_baja                 ; Cargar el factor en BX
+    MUL BX                              ; Multiplicar AX (fracPart) por BX (factor)
+    ; AX ahora tiene el cociente (parte decimal ajustada) y DX tiene el resto (acarreo)
+
+    ; Ajustar la parte decimal y manejar el acarreo
+    MOV BX, 100                         ; Divisor para ajustar la parte decimal
+    DIV BX                              ; Dividir AX (fracResult) por 100
+    MOV resultado_1_dec_baja, DX        ; Guardar la parte decimal ajustada en fracResult
+    MOV BX, AX                          ; Guardar el resto (acarreo) en BX
+
+    ; Combinar los resultados ajustados
+    MOV AX, resultado_1_ent_baja        ; Cargar el resultado de la parte entera
+    ADD AX, BX                          ; Sumar el acarreo (parte decimal ajustada) al resultado de la parte entera
+    MOV resultado_1_ent_baja, AX        ; Guardar el resultado combinado en 'combinedResult'  
+    
+    ;Prueba para verificar si la parte alta se guardo bien
+    MOV DX, resultado_1_ent_alta
+    
+    
+    ;Parte 2 de la multiplicacion (n1 por el decimal aumentado de n2)
+    
+    MOV AX, n1_ent_baja                 ; Cargar la parte entera en AX
+    MOV BX, n2_dec_baja                 ; Cargar el factor en BX
+    MUL BX                              ; Multiplicar AX (intPart) por BX (factor)
+    MOV resultado_2_ent_baja, AX        ; Guardar el resultado en 'intResult'
+    MOV resultado_2_ent_alta, DX
+
+    ; Multiplicar la parte decimal por el factor
+    MOV AX, n1_dec_baja                 ; Cargar la parte decimal en AX
+    MOV BX, n2_dec_baja                 ; Cargar el factor en BX
+    MUL BX                              ; Multiplicar AX (fracPart) por BX (factor)
+    ; AX ahora tiene el cociente (parte decimal ajustada) y DX tiene el resto (acarreo)
+
+    ; Ajustar la parte decimal y manejar el acarreo
+    MOV BX, 100                         ; Divisor para ajustar la parte decimal
+    DIV BX                              ; Dividir AX (fracResult) por 100
+    MOV resultado_2_dec_baja, DX        ; Guardar la parte decimal ajustada en fracResult
+    MOV BX, AX                          ; Guardar el resto (acarreo) en BX
+
+    ; Combinar los resultados ajustados
+    MOV AX, resultado_2_ent_baja        ; Cargar el resultado de la parte entera
+    ADD AX, BX                          ; Sumar el acarreo (parte decimal ajustada) al resultado de la parte entera
+    MOV resultado_2_ent_baja, AX        ; Guardar el resultado combinado en 'combinedResult'  
+    
+    ;Prueba para verificar si la parte alta se guardo bien
+    MOV DX, resultado_2_ent_alta
+     
+     
+    ;Parte 3 de la multiplicacion (sumar la parte entera del paso anterior a la parte decimal del paso 1)
+    
+    MOV AX, resultado_1_dec_baja        ;Carga la parte entera del paso 1 en AX
+    ADD AX, resultado_2_ent_baja        ;Suma la parte entera obtenida en el paso 2 al entero
+    
+    MOV BX, 100                         ;Mueve 100 a BX para realizar la division
+    DIV BX                              ;Divide el resultado entre 100
+    
+    ;En AX se guarda el acarreo que se debe sumar a la parte entera
+    ;En DX se guarda la parte decimal resultante del numero
+    
+    ADD resultado_f_ent_baja, AX        ;Suma el acarreo al numero final
+    ADD resultado_f_dec_baja, DX        ;Suma el resto al numero final
+    
+    MOV AX, resultado_1_ent_baja        ;Mueve la parte baja entera del primer resultado a AX
+    MOV DX, resultado_1_ent_alta        ;Mueve la parte alta entera del primer resultado a DX
+    
+    ADD resultado_f_ent_baja, AX        ;Suma el acarreo a la parte baja del numero final
+    ADD resultado_f_ent_alta, DX        ;Suma la parte alta al numero final
+    
+
+    ;Muestra de prueba del resultado final
+    
+    MOV AX, resultado_f_ent_baja
+    MOV DX, resultado_f_ent_alta
+    MOV CX, resultado_f_dec_baja
+    
+    RET
 
     
  

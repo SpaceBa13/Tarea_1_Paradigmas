@@ -2,7 +2,7 @@
 .STACK 100h
 
 .DATA
-    n1_ent_alta DW 0       ; Parte entera del numero 1 (Parte alta)
+    n1_ent_alta DW 7       ; Parte entera del numero 1 (Parte alta)
     n1_ent_baja DW 7777    ; Parte entera del numero 1 (Parte baja)
     n1_dec_alta DW 0       ; Parte decimal del numero 1 (Parte alta)
     n1_dec_baja DW 77      ; Parte decimal del numero 1 (Parte baja)
@@ -30,6 +30,9 @@
     resultado_f_ent_baja DW ?    ; Parte entera del numero resultante (Parte baja)
     resultado_f_dec_alta DW ?       ; Parte decimal del numero resultante (Parte alta)
     resultado_f_dec_baja DW ?      ; Parte decimal del numero resultante (Parte baja)
+    
+    ;Variables auxiliares
+    acarreo DW ?
 
 .CODE
 MAIN PROC
@@ -44,7 +47,17 @@ MAIN PROC
     MUL BX                              ; Multiplicar AX (intPart) por BX (factor)
     MOV resultado_1_ent_baja, AX        ; Guardar el resultado en 'intResult'
     MOV resultado_1_ent_alta, DX
-
+    
+    ;Para la parte alta del numero
+    MOV AX, n1_ent_alta
+    MUL BX
+    MOV BX, 10000
+    MUL BX
+    ;Se guardara la parte alta en DX que deberemos sumar con la parte alta anterior
+    ;Mientras que la parte baja se guardara en AX y debemos sumarla con el anterior
+    ADD resultado_1_ent_baja, AX
+    ADD resultado_1_ent_alta, DX
+    
     ; Multiplicar la parte decimal por el factor
     MOV AX, n1_dec_baja                 ; Cargar la parte decimal en AX
     MOV BX, n2_ent_baja                 ; Cargar el factor en BX
@@ -129,6 +142,8 @@ MAIN PROC
     ; Terminar el programa
     MOV AX, 4C00h         ; Interrupci�n para terminar el programa
     INT 21h
+
+
 
 MAIN ENDP
 END MAIN
