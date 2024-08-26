@@ -2,15 +2,15 @@
 .STACK 100h
 
 .DATA
-    n1_ent_alta DW 7       ; Parte entera del numero 1 (Parte alta)
-    n1_ent_baja DW 7777    ; Parte entera del numero 1 (Parte baja)
+    n1_ent_alta DW 9       ; Parte entera del numero 1 (Parte alta)
+    n1_ent_baja DW 594    ; Parte entera del numero 1 (Parte baja)
     n1_dec_alta DW 0       ; Parte decimal del numero 1 (Parte alta)
-    n1_dec_baja DW 77      ; Parte decimal del numero 1 (Parte baja)
+    n1_dec_baja DW 98      ; Parte decimal del numero 1 (Parte baja)
     
     n2_ent_alta DW 0       ; Parte entera del numero 2 (Parte alta)
-    n2_ent_baja DW 6666    ; Parte entera del numero 2 (Parte baja)
+    n2_ent_baja DW 3    ; Parte entera del numero 2 (Parte baja)
     n2_dec_alta DW 0       ; Parte decimal del numero 2 (Parte alta)
-    n2_dec_baja DW 66      ; Parte decimal del numero 2 (Parte baja)   
+    n2_dec_baja DW 14      ; Parte decimal del numero 2 (Parte baja)   
     
     
     ;Variables para almacenar la multiplicacion del n1 por el entero de n2
@@ -19,7 +19,7 @@
     resultado_1_dec_alta DW ?       ; Parte decimal del numero resultante (Parte alta)
     resultado_1_dec_baja DW ?      ; Parte decimal del numero resultante (Parte baja)
     
-    ;Variables para almacenar la multiplicacion del n1 por el decimal de n2
+    ;Variables para almacenar la multiplicacion del n1 por el decimal 6de n2
     resultado_2_ent_alta DW ?       ; Parte entera del numero resultante (Parte alta)
     resultado_2_ent_baja DW ?    ; Parte entera del numero resultante (Parte baja)
     resultado_2_dec_alta DW ?       ; Parte decimal del numero resultante (Parte alta)
@@ -56,6 +56,13 @@ MAIN PROC
     ;Se guardara la parte alta en DX que deberemos sumar con la parte alta anterior
     ;Mientras que la parte baja se guardara en AX y debemos sumarla con el anterior
     ADD resultado_1_ent_baja, AX
+    
+    ;Detecta si hubo un acarreo en la suma
+    JC acarreo_detectado_1
+    ;Si lo hay, suma 1 al registro DX
+    ;Si no lo hay continua
+    continuar_1:
+    
     ADD resultado_1_ent_alta, DX
     
     ; Multiplicar la parte decimal por el factor
@@ -87,6 +94,21 @@ MAIN PROC
     MUL BX                              ; Multiplicar AX (intPart) por BX (factor)
     MOV resultado_2_ent_baja, AX        ; Guardar el resultado en 'intResult'
     MOV resultado_2_ent_alta, DX
+    
+    ;Para la parte alta del numero
+    MOV AX, n1_ent_alta
+    MUL BX
+    MOV BX, 10000
+    MUL BX
+    
+    ;Se guardara la parte alta en DX que deberemos sumar con la parte alta anterior
+    ;Mientras que la parte baja se guardara en AX y debemos sumarla con el anterior
+    ADD resultado_2_ent_baja, AX
+    JC acarreo_detectado_2
+    
+    continuar_2:
+    ADD resultado_2_ent_alta, DX
+    
 
     ; Multiplicar la parte decimal por el factor
     MOV AX, n1_dec_baja                 ; Cargar la parte decimal en AX
@@ -134,14 +156,23 @@ MAIN PROC
     
     MOV AX, resultado_f_ent_baja
     MOV DX, resultado_f_ent_alta
-    MOV CX, resultado_f_dec_baja
+    MOV CX, resultado_f_dec_baja 
     
-    
+
     
 
     ; Terminar el programa
     MOV AX, 4C00h         ; Interrupci�n para terminar el programa
     INT 21h
+
+
+acarreo_detectado_1:
+    ADD DX, 1
+    JMP continuar_1
+
+acarreo_detectado_2:
+    ADD DX, 1
+    JMP continuar_2
 
 
 

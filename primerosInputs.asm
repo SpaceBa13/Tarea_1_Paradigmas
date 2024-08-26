@@ -460,6 +460,7 @@ CIRCULO:
     
     ;Se hace la multiplicacion
     CALL MULTIPLICACION
+   
     
     MOV n1_ent_alta, DX 
     MOV n1_ent_baja, AX
@@ -607,6 +608,7 @@ MULTIPLICACION:
     MOV resultado_f_ent_baja, 0
     MOV resultado_f_dec_alta, 0
     MOV resultado_f_dec_baja, 0
+
     
     ;Parte 1 de la multiplicacion (n1 por el entero de n2)
 
@@ -625,6 +627,12 @@ MULTIPLICACION:
     ;Se guardara la parte alta en DX que deberemos sumar con la parte alta anterior
     ;Mientras que la parte baja se guardara en AX y debemos sumarla con el anterior
     ADD resultado_1_ent_baja, AX
+    ;Detecta si hubo un acarreo en la suma
+    JC acarreo_detectado_1
+    ;Si lo hay, suma 1 al registro DX
+    ;Si no lo hay continua
+    continuar_1:
+    
     ADD resultado_1_ent_alta, DX
 
     ; Multiplicar la parte decimal por el factor
@@ -655,7 +663,25 @@ MULTIPLICACION:
     MUL BX                              ; Multiplicar AX (intPart) por BX (factor)
     MOV resultado_2_ent_baja, AX        ; Guardar el resultado en 'intResult'
     MOV resultado_2_ent_alta, DX
-
+    
+    ;Para la parte alta del numero
+    MOV AX, n1_ent_alta
+    MUL BX
+    MOV BX, 10000
+    MUL BX
+    
+    ;Se guardara la parte alta en DX que deberemos sumar con la parte alta anterior
+    ;Mientras que la parte baja se guardara en AX y debemos sumarla con el anterior
+    ADD resultado_2_ent_baja, AX
+    
+    ;Detecta si hubo un acarreo en la suma
+    JC acarreo_detectado_2
+    ;Si lo hay, suma 1 al registro DX
+    ;Si no lo hay continua
+    continuar_2:
+    ADD resultado_2_ent_alta, DX
+    
+    
     ; Multiplicar la parte decimal por el factor
     MOV AX, n1_dec_baja                 ; Cargar la parte decimal en AX
     MOV BX, n2_dec_baja                 ; Cargar el factor en BX
@@ -706,6 +732,13 @@ MULTIPLICACION:
     
     RET
 
+acarreo_detectado_1:
+    ADD DX, 1
+    JMP continuar_1
+
+acarreo_detectado_2:
+    ADD DX, 1
+    JMP continuar_2
     
  
 main endp
