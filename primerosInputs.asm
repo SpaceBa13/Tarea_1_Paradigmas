@@ -55,13 +55,48 @@ org 100h
     n_buffer_dec_alta DW ?            ; Parte decimal del numero 1 (Parte alta)
     n_buffer_dec_baja DW ?            ; Parte decimal del numero 1 (Parte baja 
     
-    
-    ;Variables para el almacenamiento de los numeros recolectados
+    ;Variables para la multiplicacion
     n1_ent_alta DW ?            ; Parte entera del numero 1 (Parte alta)
     n1_ent_baja DW ?            ; Parte entera del numero 1 (Parte baja)
     n1_dec_alta DW ?            ; Parte decimal del numero 1 (Parte alta)
     n1_dec_baja DW ?            ; Parte decimal del numero 1 (Parte baja)
-  
+    
+    n2_ent_alta DW ?            ; Parte entera del numero 2 (Parte alta)
+    n2_ent_baja DW ?            ; Parte entera del numero 2 (Parte baja)
+    n2_dec_alta DW ?            ; Parte decimal del numero 2 (Parte alta)
+    n2_dec_baja DW ?            ; Parte decimal del numero 2 (Parte baja)
+    
+    ;Variables para almacenar la multiplicacion del n1 por el entero de n2
+    resultado_1_ent_alta DW ?   ; Parte entera del numero resultante (Parte alta)
+    resultado_1_ent_baja DW ?   ; Parte entera del numero resultante (Parte baja)
+    resultado_1_dec_alta DW ?   ; Parte decimal del numero resultante (Parte alta)
+    resultado_1_dec_baja DW ?   ; Parte decimal del numero resultante (Parte baja)
+    
+    ;Variables para almacenar la multiplicacion del n1 por el decimal de n2
+    resultado_2_ent_alta DW ?   ; Parte entera del numero resultante (Parte alta)
+    resultado_2_ent_baja DW ?   ; Parte entera del numero resultante (Parte baja)
+    resultado_2_dec_alta DW ?   ; Parte decimal del numero resultante (Parte alta)
+    resultado_2_dec_baja DW ?   ; Parte decimal del numero resultante (Parte baja)
+    
+    ;Resultado combinado de la multiplicacion 
+    resultado_f_ent_alta DW ?   ; Parte entera del numero resultante (Parte alta)
+    resultado_f_ent_baja DW ?   ; Parte entera del numero resultante (Parte baja)
+    resultado_f_dec_alta DW ?   ; Parte decimal del numero resultante (Parte alta)
+    resultado_f_dec_baja DW ?   ; Parte decimal del numero resultante (Parte baja)
+    
+    ;Variables para el almacenamiento del area y perimetro
+    area_ent_alta DW ?            ; Parte entera del area (Parte alta)
+    area_ent_baja DW ?            ; Parte entera del area  (Parte baja)
+    area_dec_alta DW ?            ; Parte decimal del area  (Parte alta)
+    area_dec_baja DW ?            ; Parte decimal del area  (Parte baja)
+    
+    perimetro_ent_alta DW ?            ; Parte entera del area (Parte alta)
+    perimetro_ent_baja DW ?            ; Parte entera del area  (Parte baja)
+    perimetro_dec_alta DW ?            ; Parte decimal del area  (Parte alta)
+    perimetro_dec_baja DW ?            ; Parte decimal del area  (Parte baja)
+    
+    
+    ;Variables para el almacenamiento de los numeros recolectados
     lado1_ent_alta DW ? 
     lado1_ent_baja DW ? 
     lado1_dec_alta DW ? 
@@ -94,43 +129,14 @@ org 100h
     altura_ent_alta DW ? 
     altura_ent_baja DW ? 
     altura_dec_alta DW ? 
-    altura_dec_baja DW ? 
+    altura_dec_baja DW ?
     
-    n2_ent_alta DW ?            ; Parte entera del numero 2 (Parte alta)
-    n2_ent_baja DW ?            ; Parte entera del numero 2 (Parte baja)
-    n2_dec_alta DW ?            ; Parte decimal del numero 2 (Parte alta)
-    n2_dec_baja DW ?            ; Parte decimal del numero 2 (Parte baja)
-    
-    
-    ;Variables para almacenar la multiplicacion del n1 por el entero de n2
-    resultado_1_ent_alta DW ?   ; Parte entera del numero resultante (Parte alta)
-    resultado_1_ent_baja DW ?   ; Parte entera del numero resultante (Parte baja)
-    resultado_1_dec_alta DW ?   ; Parte decimal del numero resultante (Parte alta)
-    resultado_1_dec_baja DW ?   ; Parte decimal del numero resultante (Parte baja)
-    
-    ;Variables para almacenar la multiplicacion del n1 por el decimal de n2
-    resultado_2_ent_alta DW ?   ; Parte entera del numero resultante (Parte alta)
-    resultado_2_ent_baja DW ?   ; Parte entera del numero resultante (Parte baja)
-    resultado_2_dec_alta DW ?   ; Parte decimal del numero resultante (Parte alta)
-    resultado_2_dec_baja DW ?   ; Parte decimal del numero resultante (Parte baja)
-    
-    ;Resultado combinado de la multiplicacion 
-    resultado_f_ent_alta DW ?   ; Parte entera del numero resultante (Parte alta)
-    resultado_f_ent_baja DW ?   ; Parte entera del numero resultante (Parte baja)
-    resultado_f_dec_alta DW ?   ; Parte decimal del numero resultante (Parte alta)
-    resultado_f_dec_baja DW ?   ; Parte decimal del numero resultante (Parte baja)
-    
-    ;Variables para el almacenamiento del area y perimetro
-    area_ent_alta DW ?            ; Parte entera del area (Parte alta)
-    area_ent_baja DW ?            ; Parte entera del area  (Parte baja)
-    area_dec_alta DW ?            ; Parte decimal del area  (Parte alta)
-    area_dec_baja DW ?            ; Parte decimal del area  (Parte baja)
-    
-    perimetro_ent_alta DW ?            ; Parte entera del area (Parte alta)
-    perimetro_ent_baja DW ?            ; Parte entera del area  (Parte baja)
-    perimetro_dec_alta DW ?            ; Parte decimal del area  (Parte alta)
-    perimetro_dec_baja DW ?            ; Parte decimal del area  (Parte baja)
-    
+    apotema_ent_alta DW ? 
+    apotema_ent_baja DW ? 
+    apotema_dec_alta DW ? 
+    apotema_dec_baja DW ? 
+ 
+
     ;Variables para operaciones temporales (Trapecio)
     suma_1_ent_alta DW ? 
     suma_1_ent_baja DW ? 
@@ -147,6 +153,16 @@ org 100h
     mul_1_dec_alta DW ? 
     mul_1_dec_baja DW ?
     
+    ;--------------------------------------DOCUMENTACION GENERAL--------------------------------------
+    
+    ; Para la funcion MULTIPLICACION las variables estan almacenadas de esta forma: 
+    ; AX, resultado_f_ent_baja
+    ; DX, resultado_f_ent_alta
+    ; CX, resultado_f_dec_baja
+    
+    ; Para la funcion STR_TO_INT los numeros obtenidos en el buffer estaran guardado de esta forma:
+    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
+    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
 
     
        
@@ -346,6 +362,7 @@ pentagon_option:
     mov ah, 09h
     lea dx, pentagon
     int 21h
+    JMP PENTAGONO
     
     mov ah, 09h
     lea dx, newline
@@ -357,6 +374,7 @@ hexagon_option:
     mov ah, 09h
     lea dx, hexagon
     int 21h
+    jmp HEXAGONO
     
     mov ah, 09h
     lea dx, newline
@@ -402,7 +420,6 @@ parallelogram_option:
 
 end_program:
     ; Termina el programa
-    
     mov ah, 09h
     lea dx, finish
     int 21h
@@ -425,12 +442,9 @@ CUADRADO:
 
     ; Convertir el buffer de entrada a n�mero entero
     lea si, input_buffer
+    
+    ;Obtiene los numeros en el buffer
     call STR_TO_INT
-
-    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
-    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
-    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
-     
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
     
@@ -443,12 +457,6 @@ CUADRADO:
     
     ;Se hace la multiplicacion
     CALL MULTIPLICACION
-    
-    ; En este punto las variables estan almacenadas de esta forma:  
-    ; AX, resultado_f_ent_baja
-    ; DX, resultado_f_ent_alta
-    ; CX, resultado_f_dec_baja
-    
     MOV area_ent_alta, DX 
     MOV area_ent_baja, AX
     MOV area_dec_baja, CX
@@ -472,13 +480,7 @@ CUADRADO:
     MOV perimetro_dec_baja, CX
     
     CALL PRINT_RESULT
-      
-    
-    ; Terminar el programa
     JMP start
-       
-
-  
     
 RECTANGULO:
     lea dx, newline
@@ -494,12 +496,9 @@ RECTANGULO:
 
     ; Convertir el buffer de entrada a n�mero entero
     lea si, input_buffer
+    
+    ;Obtiene los numeros en el buffer
     call STR_TO_INT
-
-    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
-    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
-    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
-     
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
                               
@@ -507,9 +506,6 @@ RECTANGULO:
     MOV lado1_dec_baja, DX 
      
     ;reinicia el buffer------------------------------------                        
-    mov ah, 09h
-    lea dx, newline
-    int 21h
     mov ah, 09h
     lea dx, lado2
     int 21h     
@@ -522,6 +518,7 @@ RECTANGULO:
     ; Convertir el buffer de entrada a n�mero entero
     lea si, input_buffer
     call STR_TO_INT
+    
     ;reinicia el buffer------------------------------------                              
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
@@ -539,21 +536,11 @@ RECTANGULO:
     MOV n1_ent_baja, AX    
     MOV n1_dec_baja, DX 
     
-    
-
     ;Se hace la multiplicacion
     CALL MULTIPLICACION
-    
-    ; En este punto las variables estan almacenadas de esta forma:  
-    ; AX, resultado_f_ent_baja
-    ; DX, resultado_f_ent_alta
-    ; CX, resultado_f_dec_baja
-    
     MOV area_ent_alta, DX 
     MOV area_ent_baja, AX
     MOV area_dec_baja, CX   
-    
-    ;Ya funciona el area del rec___________________________
     
     ; Se vuelve al numero del buffer
     MOV AX, lado1_ent_baja                           
@@ -627,12 +614,9 @@ TRIANGULO:
 
     ; Convertir el buffer de entrada a n�mero entero
     lea si, input_buffer
+    
+    
     call STR_TO_INT
-
-    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
-    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
-    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
-     
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
                               
@@ -661,15 +645,8 @@ TRIANGULO:
     MOV n1_ent_baja, AX    
     MOV n1_dec_baja, DX 
     
-    
-
     ;Se hace la multiplicacion
     CALL MULTIPLICACION
-    
-    ; En este punto las variables estan almacenadas de esta forma:  
-    ; AX, resultado_f_ent_baja
-    ; DX, resultado_f_ent_alta
-    ; CX, resultado_f_dec_baja
     MOV n1_ent_alta, DX 
     MOV n1_ent_baja, AX
     MOV n1_dec_baja, CX  
@@ -683,8 +660,6 @@ TRIANGULO:
     MOV area_ent_alta, DX 
     MOV area_ent_baja, AX
     MOV area_dec_baja, CX   
-    
-    ;Ya funciona el area del rec___________________________
     
     ; Se vuelve al numero del buffer
     MOV AX, lado1_ent_baja                           
@@ -708,9 +683,6 @@ TRIANGULO:
     
     CALL PRINT_RESULT
     
-    
-    ;Pasos para retonar el numero.....
-
     ; Terminar el programa
     JMP start
     
@@ -728,12 +700,8 @@ ROMBO:
 
     ; Convertir el buffer de entrada a n�mero entero
     lea si, input_buffer
+    
     call STR_TO_INT
-
-    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
-    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
-    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
-     
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
                               
@@ -756,7 +724,7 @@ ROMBO:
     ; Convertir el buffer de entrada a n�mero entero
     lea si, input_buffer
     call STR_TO_INT
-    ;reinicia el buffer------------------------------------                              
+                                 
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
                               
@@ -764,9 +732,6 @@ ROMBO:
     MOV diago1_dec_baja, DX     
     
     ;reinicia el buffer------------------------------------                        
-    mov ah, 09h
-    lea dx, newline
-    int 21h
     mov ah, 09h
     lea dx, Diago2
     int 21h     
@@ -778,8 +743,7 @@ ROMBO:
 
     ; Convertir el buffer de entrada a n�mero entero
     lea si, input_buffer
-    call STR_TO_INT
-    ;reinicia el buffer------------------------------------                              
+    call STR_TO_INT                             
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
                               
@@ -796,15 +760,9 @@ ROMBO:
     MOV n1_ent_baja, AX    
     MOV n1_dec_baja, DX 
     
-    
 
     ;Se hace la multiplicacion
     CALL MULTIPLICACION
-    
-    ; En este punto las variables estan almacenadas de esta forma:  
-    ; AX, resultado_f_ent_baja
-    ; DX, resultado_f_ent_alta
-    ; CX, resultado_f_dec_baja
     MOV n1_ent_alta, DX 
     MOV n1_ent_baja, AX
     MOV n1_dec_baja, CX  
@@ -818,8 +776,6 @@ ROMBO:
     MOV area_ent_alta, DX 
     MOV area_ent_baja, AX
     MOV area_dec_baja, CX   
-    
-    ;Ya funciona el area del rec___________________________
     
     ; Se vuelve al numero del buffer
     MOV AX, lado1_ent_baja                           
@@ -842,14 +798,188 @@ ROMBO:
     MOV perimetro_dec_baja, CX 
     
     CALL PRINT_RESULT
-    
-    
-    ;Pasos para retonar el numero.....
 
     ; Terminar el programa
     JMP start
+
+PENTAGONO:
+    lea dx, newline
+    int 21h
+    lea dx, lado
+    int 21h
+     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a nï¿½mero entero
+    lea si, input_buffer
     
+    call STR_TO_INT
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+                              
+    MOV lado1_ent_baja, AX                          
+    MOV lado1_dec_baja, DX 
+     
+
+                                
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX 
+      
+                       
+                              
+    ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
+    MOV n2_ent_baja, 5    
+    MOV n2_dec_baja, 0 
+    
+    CALL MULTIPLICACION
+    
+    MOV perimetro_ent_alta, DX 
+    MOV perimetro_ent_baja, AX
+    MOV perimetro_dec_baja, CX    
+
+    ;Se hace la multiplicacion
+
+    MOV AX, lado1_ent_baja                           
+    MOV DX, lado1_dec_baja  
+    
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX
+     
+    MOV n2_ent_baja, 1    
+    MOV n2_dec_baja, 45 
+    
+    CALL MULTIPLICACION
+    
+    MOV apotema_ent_alta, DX 
+    MOV apotema_ent_baja, AX
+    MOV apotema_dec_baja, CX 
+    
+    MOV AX, perimetro_ent_baja                           
+    MOV DX, perimetro_dec_baja
+    
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX
+    
+    MOV AX, apotema_ent_baja                           
+    MOV DX, apotema_dec_baja
+    MOV n2_ent_baja, AX    
+    MOV n2_dec_baja, DX 
+    
+    
+    CALL MULTIPLICACION   
+    MOV n1_ent_alta, DX 
+    MOV n1_ent_baja, AX
+    MOV n1_dec_baja, CX  
+    
+    MOV n2_ent_alta, 0     
+    MOV n2_ent_baja, 0
+    MOV n2_dec_baja, 50
+    
+    CALL MULTIPLICACION    
         
+    MOV area_ent_alta, DX 
+    MOV area_ent_baja, AX
+    MOV area_dec_baja, CX   
+    
+    CALL PRINT_RESULT  
+
+    JMP start 
+    
+HEXAGONO:
+    lea dx, newline
+    int 21h
+    lea dx, lado
+    int 21h
+     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a nï¿½mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+                              
+    MOV lado1_ent_baja, AX                          
+    MOV lado1_dec_baja, DX 
+     
+
+                                
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX 
+                        
+    ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
+    MOV n2_ent_baja, 6    
+    MOV n2_dec_baja, 0 
+    
+    CALL MULTIPLICACION
+    
+    MOV perimetro_ent_alta, DX 
+    MOV perimetro_ent_baja, AX
+    MOV perimetro_dec_baja, CX    
+
+    ;Se hace la multiplicacion
+
+    MOV AX, lado1_ent_baja                           
+    MOV DX, lado1_dec_baja  
+    
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX
+     
+    MOV n2_ent_baja, 0    
+    MOV n2_dec_baja, 87 
+    
+    CALL MULTIPLICACION
+    
+    MOV apotema_ent_alta, DX 
+    MOV apotema_ent_baja, AX
+    MOV apotema_dec_baja, CX 
+
+    
+    MOV AX, apotema_ent_baja                           
+    MOV DX, apotema_dec_baja
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX 
+
+
+    
+    MOV n2_ent_baja, 0    
+    MOV n2_dec_baja, 50    
+    
+    CALL MULTIPLICACION   
+    MOV n1_ent_alta, DX 
+    MOV n1_ent_baja, AX
+    MOV n1_dec_baja, CX  
+    
+
+    MOV n2_ent_baja, AX
+    MOV n2_dec_baja, CX
+    
+    
+    MOV AX, perimetro_ent_baja                           
+    MOV DX, perimetro_dec_baja
+    
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX 
+        
+    
+    CALL MULTIPLICACION       
+    MOV area_ent_alta, DX 
+    MOV area_ent_baja, AX
+    MOV area_dec_baja, CX   
+    
+    CALL PRINT_RESULT     
+
+    JMP start                                               
+
+      
 CIRCULO:
     lea dx, newline
     int 21h
@@ -864,12 +994,8 @@ CIRCULO:
 
     ; Convertir el buffer de entrada a n�mero entero
     lea si, input_buffer
+    
     call STR_TO_INT
-
-    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
-    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
-    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
-     
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
     
@@ -882,17 +1008,10 @@ CIRCULO:
     
     ;Se hace la multiplicacion
     CALL MULTIPLICACION
-    
-    ; En este punto las variables estan almacenadas de esta forma:  
-    ; AX, resultado_f_ent_baja
-    ; DX, resultado_f_ent_alta
-    ; CX, resultado_f_dec_baja
-    
     MOV perimetro_ent_alta, DX 
     MOV perimetro_ent_baja, AX
     MOV perimetro_dec_baja, CX
     
-     
     ; Se vuelve al numero del buffer
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
@@ -927,146 +1046,6 @@ CIRCULO:
     
     ; Terminar el programa
     JMP start
-
-
-
-PARALELOGRAMO: 
-    lea dx, newline
-    int 21h
-    lea dx, base
-    int 21h
-     
-    ; Inicializa el puntero del buffer y limpia el buffer
-    lea di, input_buffer
-    mov byte ptr [di], '$'
-    mov cx, 0          ; Contador de caracteres
-    call READ_LOOP
-
-    ; Convertir el buffer de entrada a n�mero entero
-    lea si, input_buffer
-    call STR_TO_INT
-
-    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
-    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
-    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
-     
-    MOV AX, n_buffer_ent_baja
-    MOV DX, n_buffer_dec_baja
-    MOV lado1_ent_baja, AX
-    MOV lado1_dec_baja, DX
-    
-    ;Ingreso del lado 2
-    mov ah, 09h
-    lea dx, lado2
-    int 21h
-     
-    ; Inicializa el puntero del buffer y limpia el buffer
-    lea di, input_buffer
-    mov byte ptr [di], '$'
-    mov cx, 0          ; Contador de caracteres
-    call READ_LOOP
-
-    ; Convertir el buffer de entrada a n�mero entero
-    lea si, input_buffer
-    call STR_TO_INT
-
-    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
-    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
-    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
-    
-    MOV AX, n_buffer_ent_baja
-    MOV DX, n_buffer_dec_baja
-    MOV lado2_ent_baja, AX
-    MOV lado2_dec_baja, DX 
-    
-    
-    mov ah, 09h
-    lea dx, altura
-    int 21h
-    ; Inicializa el puntero del buffer y limpia el buffer
-    lea di, input_buffer
-    mov byte ptr [di], '$'
-    mov cx, 0          ; Contador de caracteres
-    call READ_LOOP
-
-    ; Convertir el buffer de entrada a n�mero entero
-    lea si, input_buffer
-    call STR_TO_INT
-
-    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
-    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
-    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
-    
-    MOV AX, n_buffer_ent_baja
-    MOV DX, n_buffer_dec_baja
-    
-    MOV altura_ent_baja, AX
-    MOV altura_dec_baja, DX
-    
-    ;Se mueven los valores para poder operarlos
-    
-    
-    ;Se mueven a n1 y n2 para realizar la multiplicacion (Perimetro = 2pi*r)
-    MOV AX, lado1_ent_baja
-    MOV DX, altura_ent_baja
-    
-    MOV n1_ent_baja, AX
-    MOV n2_ent_baJa, DX
-    
-    MOV AX, lado1_dec_baja
-    MOV DX, altura_dec_baja
-    
-    MOV n1_dec_baja, AX
-    MOV n2_dec_baJa, DX
-    
-    CALL MULTIPLICACION
-    
-    MOV area_ent_alta, DX 
-    MOV area_ent_baja, AX
-    MOV area_dec_baja, CX
-    
-    MOV AX, lado1_ent_baja
-    MOV DX, lado2_ent_baja
-    
-
-    ;Carga el lado 1
-    MOV AX, lado1_ent_baja                           
-    MOV DX, lado1_dec_baja
-    MOV n1_ent_baja, AX
-    MOV n1_dec_baja, DX
-    
-    ;Carga el lado 2
-    MOV AX, lado2_ent_baja                           
-    MOV DX, lado2_dec_baja
-    MOV n2_ent_baja, AX
-    MOV n2_dec_baja, DX
-    
-    ;Suma los lados
-    MOV DX, n1_dec_baja
-    ADD DX, n2_dec_baja
-    MOV BX, 100
-    MOV AX, DX
-    MOV DX, 0
-    DIV BX
-    MOV n1_dec_baja, DX
-    MOV BX, n1_ent_baJa
-    ADD BX, AX
-    ADD BX, n2_ent_baJa
-    MOV n1_ent_baja, BX
-    
-    MOV n2_ent_baJa, 2   ;Entero de pi por 2
-    MOV n2_dec_baja, 00  ;Decimal de pi por 2
-    
-    CALL MULTIPLICACION
-    
-    MOV perimetro_ent_alta, DX 
-    MOV perimetro_ent_baja, AX
-    MOV perimetro_dec_baja, CX 
-    
-    CALL PRINT_RESULT
-
-    jmp end_program
-    
 TRAPECIO:
     lea dx, newline
     int 21h
@@ -1083,10 +1062,7 @@ TRAPECIO:
     lea si, input_buffer
     call STR_TO_INT
 
-    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
-    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
-    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
-    
+    ; Guarda los valores obtenidos en el buffer
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
     MOV base_menor_ent_baja, AX
@@ -1107,10 +1083,7 @@ TRAPECIO:
     lea si, input_buffer
     call STR_TO_INT
 
-    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
-    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
-    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
-    
+    ; Guarda los valores obtenidos en el buffer
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
     MOV base_mayor_ent_baja, AX
@@ -1129,13 +1102,9 @@ TRAPECIO:
     lea si, input_buffer
     call STR_TO_INT
 
-    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
-    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
-    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
-    
+    ; Guarda los valores obtenidos en el buffer
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
-    
     MOV altura_ent_baja, AX
     MOV altura_dec_baja, DX
     
@@ -1155,10 +1124,7 @@ TRAPECIO:
     lea si, input_buffer
     call STR_TO_INT
 
-    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
-    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
-    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
-    
+    ; Guarda los valores obtenidos en el buffer
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
     MOV lado1_ent_baja, AX
@@ -1179,10 +1145,7 @@ TRAPECIO:
     lea si, input_buffer
     call STR_TO_INT
 
-    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
-    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
-    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
-    
+    ; Guarda los valores obtenidos en el buffer
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
     MOV lado2_ent_baja, AX
@@ -1266,8 +1229,138 @@ TRAPECIO:
     CALL PRINT_RESULT
     
     JMP start                                    
-                                               
+   
+
+
+PARALELOGRAMO: 
+    lea dx, newline
+    int 21h
+    lea dx, base
+    int 21h
+     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+
+    ; Guarda los valores obtenidos en el buffer
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    MOV lado1_ent_baja, AX
+    MOV lado1_dec_baja, DX
     
+    ;Ingreso del lado 2
+    mov ah, 09h
+    lea dx, lado2
+    int 21h
+     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+
+    ; Guarda los valores obtenidos en el buffer
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    MOV lado2_ent_baja, AX
+    MOV lado2_dec_baja, DX 
+    
+    
+    mov ah, 09h
+    lea dx, altura
+    int 21h
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+
+    ; Guarda los valores obtenidos en el buffer
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    
+    MOV altura_ent_baja, AX
+    MOV altura_dec_baja, DX
+    
+    ;Se mueven los valores para poder operarlos
+    
+    
+    ;Se mueven a n1 y n2 para realizar la multiplicacion (Perimetro = 2pi*r)
+    MOV AX, lado1_ent_baja
+    MOV DX, altura_ent_baja
+    
+    MOV n1_ent_baja, AX
+    MOV n2_ent_baJa, DX
+    
+    MOV AX, lado1_dec_baja
+    MOV DX, altura_dec_baja
+    
+    MOV n1_dec_baja, AX
+    MOV n2_dec_baJa, DX
+    
+    CALL MULTIPLICACION
+    
+    MOV area_ent_alta, DX 
+    MOV area_ent_baja, AX
+    MOV area_dec_baja, CX
+    
+    MOV AX, lado1_ent_baja
+    MOV DX, lado2_ent_baja
+    
+
+    ;Carga el lado 1
+    MOV AX, lado1_ent_baja                           
+    MOV DX, lado1_dec_baja
+    MOV n1_ent_baja, AX
+    MOV n1_dec_baja, DX
+    
+    ;Carga el lado 2
+    MOV AX, lado2_ent_baja                           
+    MOV DX, lado2_dec_baja
+    MOV n2_ent_baja, AX
+    MOV n2_dec_baja, DX
+    
+    ;Suma los lados
+    MOV DX, n1_dec_baja
+    ADD DX, n2_dec_baja
+    MOV BX, 100
+    MOV AX, DX
+    MOV DX, 0
+    DIV BX
+    MOV n1_dec_baja, DX
+    MOV BX, n1_ent_baJa
+    ADD BX, AX
+    ADD BX, n2_ent_baJa
+    MOV n1_ent_baja, BX
+    
+    MOV n2_ent_baJa, 2   ;Entero de pi por 2
+    MOV n2_dec_baja, 00  ;Decimal de pi por 2
+    
+    CALL MULTIPLICACION
+    
+    MOV perimetro_ent_alta, DX 
+    MOV perimetro_ent_baja, AX
+    MOV perimetro_dec_baja, CX 
+    
+    CALL PRINT_RESULT
+
+    jmp start
+    
+
      
 READ_LOOP:
     mov ah, 01h          ; Funci�n de lectura de un car�cter
@@ -1397,7 +1490,6 @@ MULTIPLICACION:
     MOV resultado_f_ent_baja, 0
     MOV resultado_f_dec_alta, 0
     MOV resultado_f_dec_baja, 0
-
     
     ;Parte 1 de la multiplicacion (n1 por el entero de n2)
 
