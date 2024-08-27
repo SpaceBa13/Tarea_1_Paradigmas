@@ -415,7 +415,7 @@ CUADRADO:
     MOV perimetro_ent_baja, AX
     MOV perimetro_dec_baja, CX
     
-    ;Pasos para retonar el numero.....
+    CALL PRINT_RESULT
       
     
     ; Terminar el programa
@@ -970,6 +970,79 @@ acarreo_detectado_2:
     ADD DX, 1
     JMP continuar_2
     
- 
+PRINT_RESULT:
+    ; Imprimir la parte entera
+    MOV AX, perimetro_ent_alta
+    CALL PRINT_WORD
+    MOV AX, perimetro_ent_baja
+    CALL PRINT_WORD
+    
+    ; Imprimir el punto decimal
+    MOV AH, 02h
+    MOV DL, '.'
+    INT 21h
+    
+    ; Imprimir la parte decimal
+    MOV AX, perimetro_dec_alta
+    CALL PRINT_WORD
+    MOV AX, perimetro_dec_baja
+    CALL PRINT_WORD
+
+    ; Salto de línea
+    MOV AH, 09h
+    LEA DX, newline
+    INT 21h
+    
+    ; Ahora imprimes el área de la misma forma, con sus respectivas variables
+    MOV AX, area_ent_alta
+    CALL PRINT_WORD
+    MOV AX, area_ent_baja
+    CALL PRINT_WORD
+    
+    ; Imprimir el punto decimal
+    MOV AH, 02h
+    MOV DL, '.'
+    INT 21h
+    
+    ; Imprimir la parte decimal
+    MOV AX, area_dec_alta
+    CALL PRINT_WORD
+    MOV AX, area_dec_baja
+    CALL PRINT_WORD
+    
+    ; Salto de línea
+    MOV AH, 09h
+    LEA DX, newline
+    INT 21h
+    
+    RET
+
+PRINT_WORD:
+    ; Convierte un número en AX a ASCII y lo imprime
+    ; Sólo funciona si el número es de 0-9999
+    
+    MOV CX, 0          ; Inicializa el contador de dígitos
+
+DIVIDE_LOOP:
+    MOV BX, 10
+    XOR DX, DX         ; Limpiar DX para dividir
+    DIV BX             ; Dividir AX entre 10, cociente en AX, resto en DX
+    
+    ADD DL, '0'        ; Convertir el resto en carácter ASCII
+    PUSH DX            ; Guardar el dígito en la pila
+    
+    INC CX             ; Incrementar contador de dígitos
+    CMP AX, 0
+    JNE DIVIDE_LOOP    ; Si el cociente no es 0, continuar dividiendo
+
+PRINT_DIGITS:
+    POP DX             ; Obtener el dígito de la pila
+    MOV AH, 02h        ; Servicio para imprimir un carácter
+    INT 21h
+    LOOP PRINT_DIGITS  ; Repetir hasta que se impriman todos los dígitos
+    
+    RET
+
+    
 main endp
 end main
