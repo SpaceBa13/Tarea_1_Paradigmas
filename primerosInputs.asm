@@ -35,10 +35,13 @@ org 100h
     
     ; Mensajes para la colecta de datos
     lado db 'Ingresa el valor del lado: $', 0Dh, 0Ah, '$'
-    lado2 db 'Ingresa el valor del lado2: $', 0Dh, 0Ah, '$'
+    lado1 db 'Ingresa el valor del lado 1: $', 0Dh, 0Ah, '$'
+    lado2 db 'Ingresa el valor del lado 2: $', 0Dh, 0Ah, '$'
     altura db 'Ingresa el valor del altura: $', 0Dh, 0Ah, '$' 
     radio db 'Ingresa el valor del radio: $', 0Dh, 0Ah, '$'
     base db 'Ingresa el valor del lado 1 (base): $', 0Dh, 0Ah, '$'
+    base_menor db 'Ingresa el valor de la base menor: $', 0Dh, 0Ah, '$'
+    base_mayor db 'Ingresa el valor de la base mayor: $', 0Dh, 0Ah, '$'
     
      
     ;Mensajes de error
@@ -66,6 +69,16 @@ org 100h
     lado2_ent_baja DW ? 
     lado2_dec_alta DW ? 
     lado2_dec_baja DW ?
+    
+    base_mayor_ent_alta DW ? 
+    base_mayor_ent_baja DW ? 
+    base_mayor_dec_alta DW ? 
+    base_mayor_dec_baja DW ?
+    
+    base_menor_ent_alta DW ? 
+    base_menor_ent_baja DW ? 
+    base_menor_dec_alta DW ? 
+    base_menor_dec_baja DW ?
          
     altura_ent_alta DW ? 
     altura_ent_baja DW ? 
@@ -106,6 +119,22 @@ org 100h
     perimetro_ent_baja DW ?            ; Parte entera del area  (Parte baja)
     perimetro_dec_alta DW ?            ; Parte decimal del area  (Parte alta)
     perimetro_dec_baja DW ?            ; Parte decimal del area  (Parte baja)
+    
+    ;Variables para operaciones temporales (Trapecio)
+    suma_1_ent_alta DW ? 
+    suma_1_ent_baja DW ? 
+    suma_1_dec_alta DW ? 
+    suma_1_dec_baja DW ?
+    
+    suma_2_ent_alta DW ? 
+    suma_2_ent_baja DW ? 
+    suma_2_dec_alta DW ? 
+    suma_2_dec_baja DW ?
+    
+    mul_1_ent_alta DW ? 
+    mul_1_ent_baja DW ? 
+    mul_1_dec_alta DW ? 
+    mul_1_dec_baja DW ?
     
 
     
@@ -328,6 +357,7 @@ trapezoid_option:
     mov ah, 09h
     lea dx, trapezoid
     int 21h
+    jmp TRAPECIO
     
     mov ah, 09h
     lea dx, newline
@@ -530,7 +560,7 @@ RECTANGULO:
     ADD BX, n2_ent_baJa
     MOV n2_ent_baJa, BX
          
-;Segunda suma                          
+    ;Segunda suma                          
     MOV DX, n1_dec_baja 
     ADD DX, n1_dec_baja
     MOV BX, 100  
@@ -542,7 +572,7 @@ RECTANGULO:
     ADD BX, AX     
     ADD BX, n1_ent_baJa 
     MOV n1_ent_baJa, BX
-;Tercera Suma 
+    ;Tercera Suma 
     MOV DX, n1_dec_baja
     ADD DX, n2_dec_baja
     MOV BX, 100
@@ -557,8 +587,6 @@ RECTANGULO:
     
     CALL PRINT_RESULT   
     
-    
-
     jmp end_program
     
     
@@ -876,20 +904,210 @@ PARALELOGRAMO:
     MOV perimetro_ent_baja, AX
     MOV perimetro_dec_baja, CX 
     
-    
-     
-     
-    
     CALL PRINT_RESULT
-    
-       
-    
+
     jmp end_program
     
+TRAPECIO:
+    lea dx, newline
+    int 21h
+    lea dx, base_menor
+    int 21h
      
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+
+    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
+    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
+    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
     
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    MOV base_menor_ent_baja, AX
+    MOV base_menor_dec_baja, DX
+    
+    ;Ingreso de la base mayor
+    mov ah, 09h
+    lea dx, base_mayor
+    int 21h
+     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+
+    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
+    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
+    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
+    
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    MOV base_mayor_ent_baja, AX
+    MOV base_mayor_dec_baja, DX 
+    
+    mov ah, 09h
+    lea dx, altura
+    int 21h
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+
+    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
+    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
+    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
+    
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    
+    MOV altura_ent_baja, AX
+    MOV altura_dec_baja, DX
+    
+    
+    ;Ingreso del lado 1
+    mov ah, 09h
+    lea dx, lado1
+    int 21h
+     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+
+    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
+    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
+    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
+    
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    MOV lado1_ent_baja, AX
+    MOV lado1_dec_baja, DX
+    
+    ;Ingreso del lado 2
+    mov ah, 09h
+    lea dx, lado2
+    int 21h
+     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+
+    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
+    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
+    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
+    
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    MOV lado2_ent_baja, AX
+    MOV lado2_dec_baja, DX
+    
+    
+    ;Se mueven los valores para poder operarlos
+    
+    ;Suma de las bases
+    MOV DX, base_menor_dec_baja
+    ADD DX, base_mayor_dec_baja
+    MOV BX, 100
+    MOV AX, DX
+    MOV DX, 0
+    DIV BX
+    MOV suma_1_dec_baja, DX
+    MOV BX, base_menor_ent_baja
+    ADD BX, AX
+    ADD BX, base_mayor_ent_baja
+    MOV suma_1_ent_baja, BX
+    
+    ;Suma de las bases + lado1
+    MOV DX, suma_1_dec_baja
+    ADD DX, lado1_dec_baja
+    MOV BX, 100
+    MOV AX, DX
+    MOV DX, 0
+    DIV BX
+    MOV suma_2_dec_baja, DX
+    MOV BX, suma_1_ent_baja
+    ADD BX, AX
+    ADD BX, lado1_ent_baja
+    MOV suma_2_ent_baja, BX
+    
+    ;Suma de las bases + lado2
+    MOV DX, suma_2_dec_baja
+    ADD DX, lado2_dec_baja
+    MOV BX, 100
+    MOV AX, DX
+    MOV DX, 0
+    DIV BX
+    MOV perimetro_dec_baja, DX
+    MOV BX, suma_2_ent_baja
+    ADD BX, AX
+    ADD BX, lado2_ent_baja
+    MOV perimetro_ent_baja, BX
+    
+    
+    ;Se mueven a n1 y n2 para realizar la multiplicacion 
+    MOV AX, suma_1_ent_baja
+    MOV DX, 0
+    
+    MOV n1_ent_baja, AX
+    MOV n2_ent_baJa, DX
+    
+    MOV AX, suma_1_dec_baja
+    MOV DX, 50
+    
+    MOV n1_dec_baja, AX
+    MOV n2_dec_baJa, DX
+    
+    CALL MULTIPLICACION
+    
+    MOV n1_ent_alta, DX 
+    MOV n1_ent_baja, AX
+    MOV n1_dec_baja, CX
+    
+    MOV AX, altura_ent_baja
+    MOV DX, altura_dec_baja
+    
+    MOV n2_ent_baja, AX
+    MOV n2_dec_baja, DX
+    
+    CALL MULTIPLICACION
+    
+    MOV area_ent_alta, DX 
+    MOV area_ent_baja, AX
+    MOV area_dec_baja, CX
     
 
+    CALL PRINT_RESULT
+                                        
+                                               
+    
      
 READ_LOOP:
     mov ah, 01h          ; Funci�n de lectura de un car�cter
