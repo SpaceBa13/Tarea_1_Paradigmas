@@ -704,17 +704,17 @@ PENTAGONO:
                               
     MOV lado1_ent_baja, AX                          
     MOV lado1_dec_baja, DX 
-                                    
+                           
     MOV n1_ent_baja, AX    
     MOV n1_dec_baja, DX 
-      
                         
     ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
     MOV n2_ent_baja, 5    
     MOV n2_dec_baja, 0 
     
+    ;Se hace la multiplicacion
     CALL MULTIPLICACION
-    CALL CARGA_DE_VALORES_DE_PERIMETRO   
+    CALL CARGA_DE_VALORES_DE_PERIMETRO 
 
     MOV AX, lado1_ent_baja                           
     MOV DX, lado1_dec_baja  
@@ -725,38 +725,43 @@ PENTAGONO:
     MOV n2_ent_baja, 1    
     MOV n2_dec_baja, 45 
     
+    ;Se hace la multiplicacion
     CALL MULTIPLICACION
+    
     MOV apotema_ent_alta, DX 
     MOV apotema_ent_baja, AX
     MOV apotema_dec_baja, CX 
-    
-    MOV AX, perimetro_ent_baja                           
-    MOV DX, perimetro_dec_baja
-    
-    MOV n1_ent_baja, AX    
-    MOV n1_dec_baja, DX
+
     
     MOV AX, apotema_ent_baja                           
     MOV DX, apotema_dec_baja
-    MOV n2_ent_baja, AX    
-    MOV n2_dec_baja, DX 
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX 
+
+
+    MOV n2_ent_baja, 0    
+    MOV n2_dec_baja, 50    
     
     ;Se hace la multiplicacion
     CALL MULTIPLICACION   
-    MOV n1_ent_alta, DX 
+ 
     MOV n1_ent_baja, AX
     MOV n1_dec_baja, CX  
-    
-    MOV n2_ent_alta, 0     
-    MOV n2_ent_baja, 0
-    MOV n2_dec_baja, 50
-    
-    CALL MULTIPLICACION    
-    CALL CARGA_DE_VALORES_DEL_AREA   
-    
-    CALL PRINT_RESULT  
 
-    JMP MENU_CONTINUAR 
+    MOV AX, perimetro_ent_baja                           
+    MOV DX, perimetro_dec_baja
+    
+    MOV n2_ent_baja, AX    
+    MOV n2_dec_baja, DX 
+        
+    
+    ;Se hace la multiplicacion
+    CALL MULTIPLICACION
+           
+    CALL CARGA_DE_VALORES_DEL_AREA   
+    CALL PRINT_RESULT     
+    JMP MENU_CONTINUAR
+    
     
 HEXAGONO:
     lea dx, newline
