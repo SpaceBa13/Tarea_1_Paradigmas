@@ -585,32 +585,21 @@ TRIANGULO:
                               
     MOV lado1_ent_baja, AX                          
     MOV lado1_dec_baja, DX 
-     
-    ;reinicia el buffer------------------------------------                        
-    mov ah, 09h
-    lea dx, newline
-    int 21h
-    mov ah, 09h
-    lea dx, altura
-    int 21h     
-    ; Inicializa el puntero del buffer y limpia el buffer
-    lea di, input_buffer
-    mov byte ptr [di], '$'
-    mov cx, 0          ; Contador de caracteres
-    call READ_LOOP
-
-    ; Convertir el buffer de entrada a n�mero entero
-    lea si, input_buffer
-    call STR_TO_INT
-    ;reinicia el buffer------------------------------------                              
-    MOV AX, n_buffer_ent_baja
-    MOV DX, n_buffer_dec_baja
+    ;Termina primer buffer 
+    
+    ;sacar Altura
+    
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX      
+    MOV n2_ent_baja, 0    
+    MOV n2_dec_baja, 87
+    CALL MULTIPLICACION    
                               
     MOV altura_ent_baja, AX                          
-    MOV altura_dec_baja, DX   
+    MOV altura_dec_baja, CX   
                                 
     MOV n2_ent_baja, AX    
-    MOV n2_dec_baja, DX 
+    MOV n2_dec_baja, CX 
       
     MOV AX, lado1_ent_baja                           
     MOV DX, lado1_dec_baja                          
