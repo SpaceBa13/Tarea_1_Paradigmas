@@ -553,7 +553,9 @@ RECTANGULO:
     MOV BX, n1_ent_baJa
     ADD BX, AX
     ADD BX, n2_ent_baJa
-    MOV perimetro_ent_baja, BX    
+    MOV perimetro_ent_baja, BX 
+    
+    CALL PRINT_RESULT   
     
     
 
@@ -662,7 +664,9 @@ TRIANGULO:
     
     MOV perimetro_ent_alta, DX 
     MOV perimetro_ent_baja, AX
-    MOV perimetro_dec_baja, CX
+    MOV perimetro_dec_baja, CX 
+    
+    CALL PRINT_RESULT
     
     
     ;Pasos para retonar el numero.....
@@ -741,7 +745,9 @@ CIRCULO:
     
     MOV area_ent_alta, DX 
     MOV area_ent_baja, AX
-    MOV area_dec_baja, CX
+    MOV area_dec_baja, CX 
+    
+    CALL PRINT_RESULT
     
     ; Terminar el programa
     jmp end_program
@@ -826,13 +832,13 @@ PARALELOGRAMO:
     
     ;Se mueven a n1 y n2 para realizar la multiplicacion (Perimetro = 2pi*r)
     MOV AX, lado1_ent_baja
-    MOV DX, lado2_ent_baja
+    MOV DX, altura_ent_baja
     
     MOV n1_ent_baja, AX
     MOV n2_ent_baJa, DX
     
     MOV AX, lado1_dec_baja
-    MOV DX, lado2_dec_baja
+    MOV DX, altura_dec_baja
     
     MOV n1_dec_baja, AX
     MOV n2_dec_baJa, DX
