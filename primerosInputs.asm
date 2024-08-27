@@ -37,6 +37,8 @@ org 100h
     lado db 'Ingresa el valor del lado: $', 0Dh, 0Ah, '$'
     lado1 db 'Ingresa el valor del lado 1: $', 0Dh, 0Ah, '$'
     lado2 db 'Ingresa el valor del lado 2: $', 0Dh, 0Ah, '$'
+    Diago1 db 'Ingresa el valor del Diagonal 1: $', 0Dh, 0Ah, '$'
+    Diago2 db 'Ingresa el valor del Diagonal 2: $', 0Dh, 0Ah, '$'
     altura db 'Ingresa el valor del altura: $', 0Dh, 0Ah, '$' 
     radio db 'Ingresa el valor del radio: $', 0Dh, 0Ah, '$'
     base db 'Ingresa el valor del lado 1 (base): $', 0Dh, 0Ah, '$'
@@ -79,6 +81,15 @@ org 100h
     base_menor_ent_baja DW ? 
     base_menor_dec_alta DW ? 
     base_menor_dec_baja DW ?
+    diago1_ent_alta DW ? 
+    diago1_ent_baja DW ? 
+    diago1_dec_alta DW ? 
+    diago1_dec_baja DW ?
+    
+    diago2_ent_alta DW ? 
+    diago2_ent_baja DW ? 
+    diago2_dec_alta DW ? 
+    diago2_dec_baja DW ?
          
     altura_ent_alta DW ? 
     altura_ent_baja DW ? 
@@ -146,6 +157,17 @@ main proc
     mov ds, ax
 
 start:
+    MOV area_ent_alta, 0
+    MOV area_ent_baja, 0
+    MOV area_dec_alta, 0
+    MOV area_dec_baja, 0
+    
+    MOV perimetro_ent_alta, 0
+    MOV perimetro_ent_baja, 0
+    MOV perimetro_dec_alta, 0
+    MOV perimetro_dec_baja, 0
+    
+
     ; Mostrar mensaje de bienvenida
     mov ah, 09h
     lea dx, menu
@@ -311,7 +333,8 @@ triangle_option:
 rhombus_option:
     mov ah, 09h
     lea dx, rhombus
-    int 21h
+    int 21h 
+    jmp ROMBO
     
     mov ah, 09h
     lea dx, newline
@@ -375,7 +398,7 @@ parallelogram_option:
     lea dx, newline
     int 21h
     
-    jmp start
+    JMP start
 
 end_program:
     ; Termina el programa
@@ -452,7 +475,7 @@ CUADRADO:
       
     
     ; Terminar el programa
-    jmp end_program
+    JMP start
        
 
   
@@ -587,7 +610,7 @@ RECTANGULO:
     
     CALL PRINT_RESULT   
     
-    jmp end_program
+    JMP start
     
     
 TRIANGULO:
@@ -689,8 +712,144 @@ TRIANGULO:
     ;Pasos para retonar el numero.....
 
     ; Terminar el programa
-    jmp end_program
+    JMP start
     
+ROMBO:
+    lea dx, newline
+    int 21h
+    lea dx, lado
+    int 21h
+     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+
+    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
+    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
+    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
+     
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+                              
+    MOV lado1_ent_baja, AX                          
+    MOV lado1_dec_baja, DX 
+     
+    ;reinicia el buffer------------------------------------                        
+    mov ah, 09h
+    lea dx, newline
+    int 21h
+    mov ah, 09h
+    lea dx, Diago1
+    int 21h     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+    ;reinicia el buffer------------------------------------                              
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+                              
+    MOV diago1_ent_baja, AX                          
+    MOV diago1_dec_baja, DX     
+    
+    ;reinicia el buffer------------------------------------                        
+    mov ah, 09h
+    lea dx, newline
+    int 21h
+    mov ah, 09h
+    lea dx, Diago2
+    int 21h     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+    ;reinicia el buffer------------------------------------                              
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+                              
+    MOV diago2_ent_baja, AX                          
+    MOV diago2_dec_baja, DX
+                                
+    MOV n2_ent_baja, AX    
+    MOV n2_dec_baja, DX 
+      
+    MOV AX, diago1_ent_baja                           
+    MOV DX, diago1_dec_baja                          
+                              
+    ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX 
+    
+    
+
+    ;Se hace la multiplicacion
+    CALL MULTIPLICACION
+    
+    ; En este punto las variables estan almacenadas de esta forma:  
+    ; AX, resultado_f_ent_baja
+    ; DX, resultado_f_ent_alta
+    ; CX, resultado_f_dec_baja
+    MOV n1_ent_alta, DX 
+    MOV n1_ent_baja, AX
+    MOV n1_dec_baja, CX  
+    
+    MOV n2_ent_alta, 0     
+    MOV n2_ent_baja, 0
+    MOV n2_dec_baja, 50
+    
+    CALL MULTIPLICACION    
+        
+    MOV area_ent_alta, DX 
+    MOV area_ent_baja, AX
+    MOV area_dec_baja, CX   
+    
+    ;Ya funciona el area del rec___________________________
+    
+    ; Se vuelve al numero del buffer
+    MOV AX, lado1_ent_baja                           
+    MOV DX, lado1_dec_baja 
+    
+    ;Se mueven a n1 y n2 para realizar la multiplicacion (Perimetro = L*4)
+   
+    MOV n1_ent_baja, AX   
+    MOV n1_dec_baja, DX 
+    
+    
+    MOV n2_ent_baJa, 4
+    MOV n2_dec_baja, 0
+    
+    ;Se hace la multiplicacion
+    CALL MULTIPLICACION
+    
+    MOV perimetro_ent_alta, DX 
+    MOV perimetro_ent_baja, AX
+    MOV perimetro_dec_baja, CX 
+    
+    CALL PRINT_RESULT
+    
+    
+    ;Pasos para retonar el numero.....
+
+    ; Terminar el programa
+    JMP start
+    
+        
 CIRCULO:
     lea dx, newline
     int 21h
@@ -767,7 +926,7 @@ CIRCULO:
     CALL PRINT_RESULT
     
     ; Terminar el programa
-    jmp end_program
+    JMP start
 
 
 
@@ -1105,7 +1264,8 @@ TRAPECIO:
     
 
     CALL PRINT_RESULT
-                                        
+    
+    JMP start                                    
                                                
     
      
@@ -1443,6 +1603,8 @@ PRINT_DIGITS:
     LOOP PRINT_DIGITS  ; Repetir hasta que se impriman todos los dígitos
     
     RET
+
+
 
     
 main endp
