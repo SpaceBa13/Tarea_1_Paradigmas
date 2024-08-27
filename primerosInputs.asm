@@ -38,6 +38,8 @@ org 100h
     lado2 db 'Ingresa el valor del lado2: $', 0Dh, 0Ah, '$'
     altura db 'Ingresa el valor del altura: $', 0Dh, 0Ah, '$' 
     radio db 'Ingresa el valor del radio: $', 0Dh, 0Ah, '$'
+    base db 'Ingresa el valor del lado 1 (base): $', 0Dh, 0Ah, '$'
+    
      
     ;Mensajes de error
     mas_de_un_punto_decimal db 'Otro punto decinmal??? :v $', 0Dh, 0Ah, '$' 
@@ -337,6 +339,7 @@ parallelogram_option:
     mov ah, 09h
     lea dx, parallelogram
     int 21h
+    JMP PARALELOGRAMO
     
     mov ah, 09h
     lea dx, newline
@@ -633,6 +636,7 @@ TRIANGULO:
     
     ; Terminar el programa
     jmp end_program
+    
 CIRCULO:
     lea dx, newline
     int 21h
@@ -708,6 +712,87 @@ CIRCULO:
     
     ; Terminar el programa
     jmp end_program
+
+
+
+PARALELOGRAMO: 
+    lea dx, newline
+    int 21h
+    lea dx, base
+    int 21h
+     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+
+    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
+    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
+    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
+     
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    MOV lado1_ent_baja, AX
+    MOV lado1_dec_baja, DX
+    
+    ;Ingreso del lado 2
+    mov ah, 09h
+    lea dx, lado2
+    int 21h
+     
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+
+    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
+    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
+    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
+    
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    MOV lado2_ent_baja, AX
+    MOV lado2_dec_baja, DX 
+    
+    
+    mov ah, 09h
+    lea dx, altura
+    int 21h
+    ; Inicializa el puntero del buffer y limpia el buffer
+    lea di, input_buffer
+    mov byte ptr [di], '$'
+    mov cx, 0          ; Contador de caracteres
+    call READ_LOOP
+
+    ; Convertir el buffer de entrada a n�mero entero
+    lea si, input_buffer
+    call STR_TO_INT
+
+    ; En esta parte el numero obtenido del buffer estara guardado de esta forma:
+    ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
+    ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
+    
+    MOV AX, n_buffer_ent_baja
+    MOV DX, n_buffer_dec_baja
+    
+    MOV altura_ent_baja, AX
+    MOV altura_dec_baja, DX
+    
+    
+    
+     
+    
+    
 
      
 READ_LOOP:
