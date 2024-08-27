@@ -664,9 +664,9 @@ TRIANGULO:
     MOV perimetro_ent_baja, AX
     MOV perimetro_dec_baja, CX
     
-    ;Pasos para retonar el numero.....
-      
     
+    ;Pasos para retonar el numero.....
+
     ; Terminar el programa
     jmp end_program
     
@@ -821,7 +821,75 @@ PARALELOGRAMO:
     MOV altura_ent_baja, AX
     MOV altura_dec_baja, DX
     
+    ;Se mueven los valores para poder operarlos
     
+    
+    ;Se mueven a n1 y n2 para realizar la multiplicacion (Perimetro = 2pi*r)
+    MOV AX, lado1_ent_baja
+    MOV DX, lado2_ent_baja
+    
+    MOV n1_ent_baja, AX
+    MOV n2_ent_baJa, DX
+    
+    MOV AX, lado1_dec_baja
+    MOV DX, lado2_dec_baja
+    
+    MOV n1_dec_baja, AX
+    MOV n2_dec_baJa, DX
+    
+    CALL MULTIPLICACION
+    
+    MOV area_ent_alta, DX 
+    MOV area_ent_baja, AX
+    MOV area_dec_baja, CX
+    
+    MOV AX, lado1_ent_baja
+    MOV DX, lado2_ent_baja
+    
+
+    ;Carga el lado 1
+    MOV AX, lado1_ent_baja                           
+    MOV DX, lado1_dec_baja
+    MOV n1_ent_baja, AX
+    MOV n1_dec_baja, DX
+    
+    ;Carga el lado 2
+    MOV AX, lado2_ent_baja                           
+    MOV DX, lado2_dec_baja
+    MOV n2_ent_baja, AX
+    MOV n2_dec_baja, DX
+    
+    ;Suma los lados
+    MOV DX, n1_dec_baja
+    ADD DX, n2_dec_baja
+    MOV BX, 100
+    MOV AX, DX
+    MOV DX, 0
+    DIV BX
+    MOV n1_dec_baja, DX
+    MOV BX, n1_ent_baJa
+    ADD BX, AX
+    ADD BX, n2_ent_baJa
+    MOV n1_ent_baja, BX
+    
+    MOV n2_ent_baJa, 2   ;Entero de pi por 2
+    MOV n2_dec_baja, 00  ;Decimal de pi por 2
+    
+    CALL MULTIPLICACION
+    
+    MOV perimetro_ent_alta, DX 
+    MOV perimetro_ent_baja, AX
+    MOV perimetro_dec_baja, CX 
+    
+    
+     
+     
+    
+    CALL PRINT_RESULT
+    
+       
+    
+    jmp end_program
     
      
     
