@@ -612,79 +612,83 @@ TRIANGULO:
     mov cx, 0          ; Contador de caracteres
     call READ_LOOP
 
-    ; Convertir el buffer de entrada a n�mero entero
+    ; Convertir el buffer de entrada a nï¿½mero entero
     lea si, input_buffer
-    
-    
     call STR_TO_INT
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
                               
     MOV lado1_ent_baja, AX                          
     MOV lado1_dec_baja, DX 
-    ;Termina primer buffer 
-    
-    ;sacar Altura
-    
-    MOV n1_ent_baja, AX    
-    MOV n1_dec_baja, DX      
-    MOV n2_ent_baja, 0    
-    MOV n2_dec_baja, 87
-    CALL MULTIPLICACION    
-                              
-    MOV altura_ent_baja, AX                          
-    MOV altura_dec_baja, CX   
+     
+
                                 
-    MOV n2_ent_baja, AX    
-    MOV n2_dec_baja, CX 
-      
-    MOV AX, lado1_ent_baja                           
-    MOV DX, lado1_dec_baja                          
-                              
-    ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
     MOV n1_ent_baja, AX    
     MOV n1_dec_baja, DX 
+                        
+    ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
+    MOV n2_ent_baja, 3    
+    MOV n2_dec_baja, 0 
     
-    ;Se hace la multiplicacion
-    CALL MULTIPLICACION
-    MOV n1_ent_alta, DX 
-    MOV n1_ent_baja, AX
-    MOV n1_dec_baja, CX  
-    
-    MOV n2_ent_alta, 0     
-    MOV n2_ent_baja, 0
-    MOV n2_dec_baja, 50
-    
-    CALL MULTIPLICACION    
-        
-    MOV area_ent_alta, DX 
-    MOV area_ent_baja, AX
-    MOV area_dec_baja, CX   
-    
-    ; Se vuelve al numero del buffer
-    MOV AX, lado1_ent_baja                           
-    MOV DX, lado1_dec_baja 
-    
-    ;Se mueven a n1 y n2 para realizar la multiplicacion (Perimetro = L*4)
-   
-    MOV n1_ent_baja, AX   
-    MOV n1_dec_baja, DX 
-    
-    
-    MOV n2_ent_baJa, 3
-    MOV n2_dec_baja, 0
-    
-    ;Se hace la multiplicacion
     CALL MULTIPLICACION
     
     MOV perimetro_ent_alta, DX 
     MOV perimetro_ent_baja, AX
-    MOV perimetro_dec_baja, CX 
+    MOV perimetro_dec_baja, CX    
+
+    ;Se hace la multiplicacion
+
+    MOV AX, lado1_ent_baja                           
+    MOV DX, lado1_dec_baja  
     
-    CALL PRINT_RESULT
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX
+     
+    MOV n2_ent_baja, 0    
+    MOV n2_dec_baja, 87 
     
-    ; Terminar el programa
-    JMP start
+    CALL MULTIPLICACION
+    
+    MOV altura_ent_alta, DX 
+    MOV altura_ent_baja, AX
+    MOV altura_dec_baja, CX 
+
+    
+    MOV AX, altura_ent_baja                           
+    MOV DX, altura_dec_baja
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX 
+
+
+    
+    MOV n2_ent_baja, 0    
+    MOV n2_dec_baja, 50    
+    
+    CALL MULTIPLICACION   
+    MOV n1_ent_alta, DX 
+    MOV n1_ent_baja, AX
+    MOV n1_dec_baja, CX  
+    
+
+    MOV n2_ent_baja, AX
+    MOV n2_dec_baja, CX
+    
+    
+    MOV AX, lado1_ent_baja                           
+    MOV DX, lado1_dec_baja
+    
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX 
+        
+    
+    CALL MULTIPLICACION       
+    MOV area_ent_alta, DX 
+    MOV area_ent_baja, AX
+    MOV area_dec_baja, CX   
+    
+    CALL PRINT_RESULT     
+
+    JMP end_program  
     
 ROMBO:
     lea dx, newline
@@ -748,34 +752,9 @@ ROMBO:
     MOV DX, n_buffer_dec_baja
                               
     MOV diago2_ent_baja, AX                          
-    MOV diago2_dec_baja, DX
-                                
-    MOV n2_ent_baja, AX    
-    MOV n2_dec_baja, DX 
-      
-    MOV AX, diago1_ent_baja                           
-    MOV DX, diago1_dec_baja                          
-                              
-    ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
-    MOV n1_ent_baja, AX    
-    MOV n1_dec_baja, DX 
+    MOV diago2_dec_baja, DX 
     
-
-    ;Se hace la multiplicacion
-    CALL MULTIPLICACION
-    MOV n1_ent_alta, DX 
-    MOV n1_ent_baja, AX
-    MOV n1_dec_baja, CX  
     
-    MOV n2_ent_alta, 0     
-    MOV n2_ent_baja, 0
-    MOV n2_dec_baja, 50
-    
-    CALL MULTIPLICACION    
-        
-    MOV area_ent_alta, DX 
-    MOV area_ent_baja, AX
-    MOV area_dec_baja, CX   
     
     ; Se vuelve al numero del buffer
     MOV AX, lado1_ent_baja                           
@@ -797,10 +776,45 @@ ROMBO:
     MOV perimetro_ent_baja, AX
     MOV perimetro_dec_baja, CX 
     
+                                
+
+      
+    MOV AX, diago1_ent_baja                           
+    MOV DX, diago1_dec_baja                          
+                              
+    ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX 
+    
+    MOV n2_ent_baja, 0    
+    MOV n2_dec_baja, 50     
+
+    ;Se hace la multiplicacion
+    CALL MULTIPLICACION
+    MOV n1_ent_alta, DX 
+    MOV n1_ent_baja, AX
+    MOV n1_dec_baja, CX 
+    
+    MOV AX, diago2_ent_baja                           
+    MOV DX, diago2_dec_baja        
+      
+    
+    
+    MOV n2_ent_baja, AX
+    MOV n2_dec_baja, DX
+    
+    CALL MULTIPLICACION    
+        
+    MOV area_ent_alta, DX 
+    MOV area_ent_baja, AX
+    MOV area_dec_baja, CX   
+    
+
+    
     CALL PRINT_RESULT
 
     ; Terminar el programa
-    JMP start
+    JMP end_program
 
 PENTAGONO:
     lea dx, newline
@@ -816,7 +830,6 @@ PENTAGONO:
 
     ; Convertir el buffer de entrada a nï¿½mero entero
     lea si, input_buffer
-    
     call STR_TO_INT
     MOV AX, n_buffer_ent_baja
     MOV DX, n_buffer_dec_baja
@@ -828,9 +841,7 @@ PENTAGONO:
                                 
     MOV n1_ent_baja, AX    
     MOV n1_dec_baja, DX 
-      
-                       
-                              
+                        
     ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
     MOV n2_ent_baja, 5    
     MOV n2_dec_baja, 0 
@@ -857,37 +868,42 @@ PENTAGONO:
     MOV apotema_ent_alta, DX 
     MOV apotema_ent_baja, AX
     MOV apotema_dec_baja, CX 
+
+    
+    MOV AX, apotema_ent_baja                           
+    MOV DX, apotema_dec_baja
+    MOV n1_ent_baja, AX    
+    MOV n1_dec_baja, DX 
+
+
+    
+    MOV n2_ent_baja, 0    
+    MOV n2_dec_baja, 50    
+    
+    CALL MULTIPLICACION   
+ 
+    MOV n1_ent_baja, AX
+    MOV n1_dec_baja, CX  
+    
+
+
+    
     
     MOV AX, perimetro_ent_baja                           
     MOV DX, perimetro_dec_baja
     
-    MOV n1_ent_baja, AX    
-    MOV n1_dec_baja, DX
-    
-    MOV AX, apotema_ent_baja                           
-    MOV DX, apotema_dec_baja
     MOV n2_ent_baja, AX    
     MOV n2_dec_baja, DX 
-    
-    
-    CALL MULTIPLICACION   
-    MOV n1_ent_alta, DX 
-    MOV n1_ent_baja, AX
-    MOV n1_dec_baja, CX  
-    
-    MOV n2_ent_alta, 0     
-    MOV n2_ent_baja, 0
-    MOV n2_dec_baja, 50
-    
-    CALL MULTIPLICACION    
         
+    
+    CALL MULTIPLICACION       
     MOV area_ent_alta, DX 
     MOV area_ent_baja, AX
     MOV area_dec_baja, CX   
     
-    CALL PRINT_RESULT  
+    CALL PRINT_RESULT     
 
-    JMP start 
+    JMP end_program 
     
 HEXAGONO:
     lea dx, newline
