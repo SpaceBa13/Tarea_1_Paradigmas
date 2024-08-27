@@ -2,10 +2,10 @@
 .STACK 100h
 
 .DATA
-    n1_ent_alta DW 9       ; Parte entera del numero 1 (Parte alta)
-    n1_ent_baja DW 594    ; Parte entera del numero 1 (Parte baja)
+    n1_ent_alta DW 6       ; Parte entera del numero 1 (Parte alta)
+    n1_ent_baja DW 5789    ; Parte entera del numero 1 (Parte baja)
     n1_dec_alta DW 0       ; Parte decimal del numero 1 (Parte alta)
-    n1_dec_baja DW 98      ; Parte decimal del numero 1 (Parte baja)
+    n1_dec_baja DW 44      ; Parte decimal del numero 1 (Parte baja)
     
     n2_ent_alta DW 0       ; Parte entera del numero 2 (Parte alta)
     n2_ent_baja DW 3    ; Parte entera del numero 2 (Parte baja)
