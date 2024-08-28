@@ -185,7 +185,100 @@ main proc
     mov ds, ax
 
 start:
-    ;Limpia las variables resultado
+    ;Limpia las variables resultado 
+    
+    MOV n_buffer_ent_alta, 0            ; Parte entera del numero 1 (Parte alta)
+    MOV n_buffer_ent_baja, 0            ; Parte entera del numero 1 (Parte baja)
+    MOV n_buffer_dec_alta, 0            ; Parte decimal del numero 1 (Parte alta)
+    MOV n_buffer_dec_baja, 0            ; Parte decimal del numero 1 (Parte baja 
+    
+    ;Variables para la multiplicacion
+    MOV n1_ent_alta, 0            ; Parte entera del numero 1 (Parte alta)
+    MOV n1_ent_baja, 0            ; Parte entera del numero 1 (Parte baja)
+    MOV n1_dec_alta, 0            ; Parte decimal del numero 1 (Parte alta)
+    MOV n1_dec_baja, 0            ; Parte decimal del numero 1 (Parte baja)
+    
+    MOV n2_ent_alta, 0            ; Parte entera del numero 2 (Parte alta)
+    MOV n2_ent_baja, 0            ; Parte entera del numero 2 (Parte baja)
+    MOV n2_dec_alta, 0            ; Parte decimal del numero 2 (Parte alta)
+    MOV n2_dec_baja, 0            ; Parte decimal del numero 2 (Parte baja)
+    
+    ;Variables para almacenar la multiplicacion del n1 por el entero de n2
+    MOV resultado_1_ent_alta, 0   ; Parte entera del numero resultante (Parte alta)
+    MOV resultado_1_ent_baja, 0   ; Parte entera del numero resultante (Parte baja)
+    MOV resultado_1_dec_alta, 0   ; Parte decimal del numero resultante (Parte alta)
+    MOV resultado_1_dec_baja, 0   ; Parte decimal del numero resultante (Parte baja)
+    
+    ;Variables para almacenar la multiplicacion del n1 por el decimal de n2
+    MOV resultado_2_ent_alta, 0   ; Parte entera del numero resultante (Parte alta)
+    MOV resultado_2_ent_baja, 0   ; Parte entera del numero resultante (Parte baja)
+    MOV resultado_2_dec_alta, 0   ; Parte decimal del numero resultante (Parte alta)
+    MOV resultado_2_dec_baja, 0   ; Parte decimal del numero resultante (Parte baja)
+    
+    ;Resultado combinado de la multiplicacion 
+    MOV resultado_f_ent_alta, 0   ; Parte entera del numero resultante (Parte alta)
+    MOV resultado_f_ent_baja, 0   ; Parte entera del numero resultante (Parte baja)
+    MOV resultado_f_dec_alta, 0   ; Parte decimal del numero resultante (Parte alta)
+    MOV resultado_f_dec_baja, 0   ; Parte decimal del numero resultante (Parte baja)
+    
+         ; Parte decimal del area  (Parte baja)
+    
+    ;Variables para el almacenamiento de los numeros recolectados
+    MOV lado1_ent_alta, 0 
+    MOV lado1_ent_baja, 0 
+    MOV lado1_dec_alta, 0 
+    MOV lado1_dec_baja, 0  
+    
+    MOV lado2_ent_alta, 0 
+    MOV lado2_ent_baja, 0 
+    MOV lado2_dec_alta, 0 
+    MOV lado2_dec_baja, 0
+    
+    MOV base_mayor_ent_alta, 0 
+    MOV base_mayor_ent_baja, 0 
+    MOV base_mayor_dec_alta, 0 
+    MOV base_mayor_dec_baja, 0
+    
+    MOV base_menor_ent_alta, 0 
+    MOV base_menor_ent_baja, 0 
+    MOV base_menor_dec_alta, 0 
+    MOV base_menor_dec_baja, 0
+    MOV diago1_ent_alta, 0 
+    MOV diago1_ent_baja, 0 
+    MOV diago1_dec_alta, 0 
+    MOV diago1_dec_baja, 0
+    
+    MOV diago2_ent_alta, 0 
+    MOV diago2_ent_baja, 0 
+    MOV diago2_dec_alta, 0  
+    MOV diago2_dec_baja, 0
+         
+    MOV altura_ent_alta, 0 
+    MOV altura_ent_baja, 0 
+    MOV altura_dec_alta, 0 
+    MOV altura_dec_baja, 0
+    
+    MOV apotema_ent_alta, 0 
+    MOV apotema_ent_baja, 0 
+    MOV apotema_dec_alta, 0 
+    MOV apotema_dec_baja, 0 
+ 
+    ;Variables para operaciones temporales (Trapecio)
+    MOV suma_1_ent_alta, 0 
+    MOV suma_1_ent_baja, 0 
+    MOV suma_1_dec_alta, 0 
+    MOV suma_1_dec_baja, 0
+    
+    MOV suma_2_ent_alta, 0 
+    MOV suma_2_ent_baja, 0 
+    MOV suma_2_dec_alta, 0 
+    MOV suma_2_dec_baja, 0
+    
+    MOV mul_1_ent_alta, 0 
+    MOV mul_1_ent_baja, 0 
+    MOV mul_1_dec_alta, 0   
+    MOV mul_1_dec_baja, 0
+        
     MOV area_ent_alta, 0
     MOV area_ent_baja, 0
     MOV area_dec_alta, 0
