@@ -956,12 +956,15 @@ CIRCULO:
     MOV DX, n_buffer_dec_baja
     
     ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = pi*r^2)
-    ;En esta parte se realiza r^2
-    MOV n1_ent_baja, AX
-    MOV n2_ent_baJa, AX
+    ;En esta parte se realiza r^2 
+    MOV lado1_ent_baja, AX                          
+    MOV lado1_dec_baja, DX
     
+    MOV n1_ent_baja, AX                          
     MOV n1_dec_baja, DX
-    MOV n2_dec_baja, DX
+    
+    MOV n2_ent_baja, 0                          
+    MOV n2_dec_baja, 02
     
     ;Se hace la multiplicacion
     CALL MULTIPLICACION
@@ -970,11 +973,24 @@ CIRCULO:
     MOV n1_ent_baja, AX
     MOV n1_dec_baja, CX
     
-    MOV n2_ent_baja, 3
-    MOV n2_dec_baja, 14
+    MOV n2_ent_baja, 157
+    MOV n2_dec_baja, 0
     
     ;Se hace la multiplicacion
-    CALL MULTIPLICACION
+    CALL MULTIPLICACION  
+    
+    MOV n1_ent_alta, DX 
+    MOV n1_ent_baja, AX
+    MOV n1_dec_baja, CX
+    
+    MOV AX, lado1_ent_baja
+    MOV DX, lado1_dec_baja  
+    
+    MOV n2_ent_baja, AX                          
+    MOV n2_dec_baja, DX  
+    
+    ;Se hace la multiplicacion
+    CALL MULTIPLICACION 
     
     CALL CARGA_DE_VALORES_DEL_AREA 
     CALL PRINT_RESULT
