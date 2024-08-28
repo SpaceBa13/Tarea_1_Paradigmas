@@ -1368,6 +1368,17 @@ MULTIPLICACION:
     MOV resultado_f_dec_alta, 0
     MOV resultado_f_dec_baja, 0
     
+    MOV resultado_1_ent_alta, 0
+    MOV resultado_1_ent_baja, 0
+    MOV resultado_1_dec_alta, 0
+    MOV resultado_1_dec_baja, 0
+    
+    
+    MOV resultado_2_ent_alta, 0
+    MOV resultado_2_ent_baja, 0
+    MOV resultado_2_dec_alta, 0
+    MOV resultado_2_dec_baja, 0
+    
     ;Parte 1 de la multiplicacion (n1 por el entero de n2)
 
     ; Multiplicar la parte entera por el factor
