@@ -86,12 +86,9 @@ org 100h
     perimetro_ent_alta DW ?            ; Parte entera del area (Parte alta)
     perimetro_ent_baja DW ?            ; Parte entera del area  (Parte baja)
     perimetro_dec_alta DW ?            ; Parte decimal del area  (Parte alta)
-    perimetro_dec_baja DW ?
-                ; Parte decimal del area  (Parte baja)
-                
-    aux DW 0, 0, 0
+    perimetro_dec_baja DW ?            ; Parte decimal del area  (Parte baja)
     
-    crlf DB 0Dh, 0Ah, '$'   ; Carriage return & newline
+
     
        
 .code
@@ -399,9 +396,12 @@ CUADRADO:
     MOV perimetro_ent_baja, AX
     MOV perimetro_dec_baja, CX
     
-    CALL PARSE
+    CALL PRINT_RESULT
       
-   
+    
+    ; Terminar el programa
+    jmp end_program
+
 
 CIRCULO:
     lea dx, newline
@@ -740,151 +740,79 @@ acarreo_detectado_2:
     ADD DX, 1
     JMP continuar_2
     
-PARSE proc  ; Inserta un numero guardado DX:AX.BX en una cadena en SI (que debe tener el punto decimal con 10 ceros adelantes y 2 ceros atras)
-    CMP dx, 0
-        JZ PARSE16 ; Si en la parte alta del numero no hay podemos saltar al otro caso
-    MOV cx, 10000
-    DIV cx ; Hacemos esta division entre 10 mil para separar nuestro entero de 32 bits en 2 grupos de 4 digitos
-
-    MOV [aux], ax   
-    MOV [aux+2], dx ; Movemos los resultados de la div a otro lugar por el momento
-    ; (1)
+PRINT_RESULT:
+    ; Imprimir la parte entera alta y baja
+    MOV DX, perimetro_ent_alta   ; Parte alta de la parte entera
+    MOV AX, perimetro_ent_baja   ; Parte baja de la parte entera
+    CALL PRINT_DWORD             ; Llama al procedimiento para imprimir 32 bits
     
-    PARSE32:
-        MOV cx, 13
-        XOR ax, ax
-        XOR dx, dx
+    ; Imprimir el punto decimal
+    MOV AH, 02h
+    MOV DL, '.'
+    INT 21h
+    
+    ; Imprimir la parte decimal alta y baja
+    MOV DX, perimetro_dec_alta   ; Parte alta de la parte decimal
+    MOV AX, perimetro_dec_baja   ; Parte baja de la parte decimal
+    CALL PRINT_DWORD             ; Llama al procedimiento para imprimir 32 bits
 
-        MOV ax, bx  ; Mover parte flotante a AX
-        MOV bx, 10  ; Ponemos nuestro divisor en BX
-        p32_FLT_loop:   ; Procesar digitos flotantes
-            CMP cx, 11
-                JE p32_midpoint ; Si ya no quedan digitos salimos del loop
-            DEC si  ; Movemos el cabezal de lectura una posicion atras
-            DEC cx  ; Decrementamos el contador
-            DIV bx  ; Aislamos un digito del numero
+    ; Salto de línea
+    MOV AH, 09h
+    LEA DX, newline
+    INT 21h
+    
+    ; Imprimir el área de la misma forma
+    MOV DX, area_ent_alta
+    MOV AX, area_ent_baja
+    CALL PRINT_DWORD
+    
+    ; Imprimir el punto decimal
+    MOV AH, 02h
+    MOV DL, '.'
+    INT 21h
+    
+    ; Imprimir la parte decimal
+    MOV DX, area_dec_alta
+    MOV AX, area_dec_baja
+    CALL PRINT_DWORD
+    
+    ; Salto de línea
+    MOV AH, 09h
+    LEA DX, newline
+    INT 21h
+    
+    RET
 
-            ADD dl, 30h ; Convertimos el digito a ASCII
-            MOV [si], dl; Movemos el caracter a la cadena
+PRINT_DWORD:
+    ; Convierte un número de 32 bits (DX:AX) a ASCII y lo imprime
+    ; Se asume que DX tiene la parte alta y AX la parte baja
 
-            XOR dx, dx  ; Limpiamos el residuo de la div (DX)
-            JMP p32_FLT_loop
+    PUSH DX            ; Guarda la parte alta en la pila
+    PUSH AX            ; Guarda la parte baja en la pila
 
-        p32_midpoint:   ; Despues del primer ciclo
-        DEC si
-        MOV cx, 10
-        MOV ax, [aux+2] ; Movemos a AX nuestro primeros 4 digitos de la parte entera
-        p32_INT1_loop:   ; Procesar digitos enteros
-            CMP cx, 6
-                JE p32_endpoint1 ; Si ya no quedan digitos moverse a la siguiente parte
-            DEC si  ; Mover el cabezal de lectura una posicion atras
-            DEC cx  ; Decrementamos el contador
+    MOV CX, 0          ; Inicializa el contador de dígitos
 
-            DIV bx          ; Aislar un digito
-            ADD dl, 30h     ; Convertir digito a ASCII
-            MOV [si], dl    ; Mover digito a la cadena
-            
-            XOR dx, dx      ; Limpiar registro
-            JMP p32_INT1_loop
+DIVIDE_LOOP_32:
+    MOV BX, 10
+    XOR DX, DX         ; Limpiar DX para dividir
+    DIV BX             ; Divide AX entre 10, cociente en AX, resto en DX
+    ADD DL, '0'        ; Convertir el resto en carácter ASCII
+    PUSH DX            ; Guardar el dígito en la pila
 
-        p32_endpoint1:  ; Despues del segundo ciclo
-        MOV ax, [aux]; Movemos a AX el resto de digitos de la parte entera
-        CMP ax, 0
-        p32_INT2_loop:
-            CMP ax, 0
-                JE p32_endpoint2 ; Si ya no quedan digitos moverse a la siguiente parte
-            DEC cx  ; Decrementamos el contador
-            DEC si  ; Mover el cabezal de lectura una posicion atras
+    INC CX             ; Incrementar contador de dígitos
+    CMP AX, 0
+    JNE DIVIDE_LOOP_32 ; Si el cociente no es 0, continuar dividiendo
 
-            DIV bx          ; Aislar un digito
-            ADD dl, 30h     ; Convertir digito a ASCII
-            MOV [si], dl    ; Mover digito a la cadena
-            
-            XOR dx, dx      ; Limpiar registro
-            JMP p32_INT2_loop
+PRINT_DIGITS_32:
+    POP DX             ; Obtener el dígito de la pila
+    MOV AH, 02h        ; Servicio para imprimir un carácter
+    INT 21h
+    LOOP PRINT_DIGITS_32  ; Repetir hasta que se impriman todos los dígitos
+    
+    POP AX             ; Recupera la parte baja original
+    POP DX             ; Recupera la parte alta original
+    RET
 
-        p32_endpoint2:  ; Despues del tercer ciclo
-    JMP PARSE_RET
-    ; (2)
-    PARSE16:
-        MOV cx, 13
-        MOV [aux], ax
-        MOV ax, bx ; Mover primero la parte flotante
-        MOV bx, 10 ; Mover a BX nuestro divisor
-        p16_FLT_loop:   ; Procesar digitos flotantes
-            CMP cx, 11
-                JE p16_midpoint ; Si ya no quedan digitos salimos del loop
-            DEC si  ; Movemos el cabezal de lectura una posicion atras
-            DEC cx  ; Decrementamos el contador
-            DIV bx  ; Aislamos un digito del numero
-
-            ADD dl, 30h ; Convertimos el digito a ASCII
-            MOV [si], dl; Movemos el caracter a la cadena
-
-            XOR dx, dx  ; Limpiamos el residuo de la div (DX)
-            JMP p16_FLT_loop
-        p16_midpoint:   ; Despues del primer ciclo
-        DEC si
-        MOV cx, 10
-        MOV ax, [aux]   ; Mover nuevamente a AX la parte entera
-        CMP ax, 0
-            JE p16_endpoint
-        p16_INT_loop:   ; Procesar digitos enteros
-            CMP ax, 0
-                JE PARSE_RET ; Si ya no quedan digitos salimos del loop
-            DEC si  ; Movemos el cabezal de lectura una posicion atras
-            DEC cx  ; Decrementamos el contador
-            DIV bx  ; Aislamos un digito del numero
-
-            ADD dl, 30h ; Convertimos el digito a ASCII
-            MOV [si], dl; Movemos el caracter a la cadena
-
-            XOR dx, dx  ; Limpiamos el residuo de la div (DX)
-            JMP p16_INT_loop
-
-        p16_endpoint:   ; Despues del segundo ciclo
-        DEC cx
-    PARSE_RET:
-    XOR ax, ax
-    XOR bx, bx
-    XOR dx, dx
-
-    MOV [aux], ax
-    MOV [aux+2], ax
-    ret
-PARSE endp
-
-; Limpia la cadena guardada en SI con el formato esperado de '0000000000.00'
-CLEAN_32STR proc
-    ; RIGHT -> LEFT
-    MOV ah, 30h ; Caracter '0'
-    MOV cx, 13  ; Contador
-    clean_loop:
-        CMP cx, 10  ; Posicion donde esta la coma
-            JE loop_skip
-        CMP cx, 13  ; Final de la cadena
-            JE loop_skip
-        CMP cx, 0   ; Inicio de la cadena
-            JE clean_endpoint
-        MOV [si], ah
-        loop_skip:
-        DEC si
-        DEC cx
-        JMP clean_loop
-
-    clean_endpoint:
-    ret
-CLEAN_32STR endp
-
-; Muestra el contenido en DX
-PRINTOUT proc
-    MOV ah, 09h
-    INT 21h ; Redirecciona al output l1o que sea que haya en DX
-
-    XOR ax, ax  ; Limpiar registro
-    XOR dx, dx  ; Limpiar registro
-    ret
-PRINTOUT endp
-
+    
 main endp
 end main
