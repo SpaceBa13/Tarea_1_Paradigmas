@@ -1504,33 +1504,30 @@ acarreo_detectado_2:
     JMP continuar_2
         
 PRINT_RESULT:
-    ; Imprimir la parte entera
-    MOV AX, perimetro_ent_alta
-    CALL PRINT_WORD
-    MOV AX, perimetro_ent_baja
-    CALL PRINT_WORD
+    ; Imprimir la parte entera alta y baja
+    MOV DX, perimetro_ent_alta   ; Parte alta de la parte entera
+    MOV AX, perimetro_ent_baja   ; Parte baja de la parte entera
+    CALL PRINT_DWORD             ; Llama al procedimiento para imprimir 32 bits
     
     ; Imprimir el punto decimal
     MOV AH, 02h
     MOV DL, '.'
     INT 21h
     
-    ; Imprimir la parte decimal
-    MOV AX, perimetro_dec_alta
-    CALL PRINT_WORD
-    MOV AX, perimetro_dec_baja
-    CALL PRINT_WORD
+    ; Imprimir la parte decimal alta y baja
+    MOV DX, perimetro_dec_alta   ; Parte alta de la parte decimal
+    MOV AX, perimetro_dec_baja   ; Parte baja de la parte decimal
+    CALL PRINT_DWORD             ; Llama al procedimiento para imprimir 32 bits
 
-    ; Salto de l√≠nea
+    ; Salto de lÌnea
     MOV AH, 09h
     LEA DX, newline
     INT 21h
     
-    ; Ahora imprimes el √°rea de la misma forma, con sus respectivas variables
-    MOV AX, area_ent_alta
-    CALL PRINT_WORD
+    ; Imprimir el ·rea de la misma forma
+    MOV DX, area_ent_alta
     MOV AX, area_ent_baja
-    CALL PRINT_WORD
+    CALL PRINT_DWORD
     
     ; Imprimir el punto decimal
     MOV AH, 02h
@@ -1538,43 +1535,46 @@ PRINT_RESULT:
     INT 21h
     
     ; Imprimir la parte decimal
-    MOV AX, area_dec_alta
-    CALL PRINT_WORD
+    MOV DX, area_dec_alta
     MOV AX, area_dec_baja
-    CALL PRINT_WORD
+    CALL PRINT_DWORD
     
-    ; Salto de l√≠nea
+    ; Salto de lÌnea
     MOV AH, 09h
     LEA DX, newline
     INT 21h
     
     RET
 
-PRINT_WORD:
-    ; Convierte un n√∫mero en AX a ASCII y lo imprime
-    ; S√≥lo funciona si el n√∫mero es de 0-9999
-    
-    MOV CX, 0          ; Inicializa el contador de d√≠gitos
+PRINT_DWORD:
+    ; Convierte un n˙mero de 32 bits (DX:AX) a ASCII y lo imprime
+    ; Se asume que DX tiene la parte alta y AX la parte baja
 
-DIVIDE_LOOP:
+    PUSH DX            ; Guarda la parte alta en la pila
+    PUSH AX            ; Guarda la parte baja en la pila
+
+    MOV CX, 0          ; Inicializa el contador de dÌgitos
+
+DIVIDE_LOOP_32:
     MOV BX, 10
     XOR DX, DX         ; Limpiar DX para dividir
-    DIV BX             ; Dividir AX entre 10, cociente en AX, resto en DX
-    
-    ADD DL, '0'        ; Convertir el resto en car√°cter ASCII
-    PUSH DX            ; Guardar el d√≠gito en la pila
-    
-    INC CX             ; Incrementar contador de d√≠gitos
-    CMP AX, 0
-    JNE DIVIDE_LOOP    ; Si el cociente no es 0, continuar dividiendo
+    DIV BX             ; Divide AX entre 10, cociente en AX, resto en DX
+    ADD DL, '0'        ; Convertir el resto en car·cter ASCII
+    PUSH DX            ; Guardar el dÌgito en la pila
 
-PRINT_DIGITS:
-    POP DX             ; Obtener el d√≠gito de la pila
-    MOV AH, 02h        ; Servicio para imprimir un car√°cter
+    INC CX             ; Incrementar contador de dÌgitos
+    CMP AX, 0
+    JNE DIVIDE_LOOP_32 ; Si el cociente no es 0, continuar dividiendo
+
+PRINT_DIGITS_32:
+    POP DX             ; Obtener el dÌgito de la pila
+    MOV AH, 02h        ; Servicio para imprimir un car·cter
     INT 21h
-    LOOP PRINT_DIGITS  ; Repetir hasta que se impriman todos los d√≠gitos
+    LOOP PRINT_DIGITS_32  ; Repetir hasta que se impriman todos los dÌgitos
     
-    RET
+    POP AX             ; Recupera la parte baja original
+    POP DX             ; Recupera la parte alta original
+    RET  
 
 LEER_CARACTERES_EN_EL_BUFFER:
     ; Inicializa el puntero del buffer y limpia el buffer
