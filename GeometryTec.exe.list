@@ -1,0 +1,1786 @@
+EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
+ 
+GeometryTec.exe -- emu8086 assembler version: 4.08  
+ 
+[ 29/8/2024  --  16:05:59 ] 
+ 
+===================================================================================================
+[LINE]     LOC: MACHINE CODE                          SOURCE
+===================================================================================================
+ 
+[   1]        :                                       .model small
+[   2]        :                                       .stack 100h
+[   3]        :                                       
+[   4]        :                                       .data
+[   5]        :                                       ;--------------------------------------VARIABLES PARA EL USO DEL PROGRAMA--------------------------------------
+[   6]        :                                       
+[   7]        :                                       
+[   8]        :                                       ;Variables para el menu
+[   9]    0100: 42 69 65 6E 76 65 6E 69 64 6F 20 61   menu db 'Bienvenido a GeometryTec!$', 0Dh, 0Ah, '$'
+                20 47 65 6F 6D 65 74 72 79 54 65 63 
+                21 24 0D 0A 24                      
+[  10]    011D: 0D 0A 24                              newline db 0Dh, 0Ah, '$'
+[  11]    0120: 49 6E 64 69 71 75 65 20 63 75 61 6C   prompt db 'Indique cual figura desea calcular su area y perimetro:$',  0Dh, 0Ah, '$'
+                20 66 69 67 75 72 61 20 64 65 73 65 
+                61 20 63 61 6C 63 75 6C 61 72 20 73 
+                75 20 61 72 65 61 20 79 20 70 65 72 
+                69 6D 65 74 72 6F 3A 24 0D 0A 24    
+[  12]    015B: 31 2E 20 50 61 72 61 20 43 75 61 64   option1 db '1. Para Cuadrado.$', 0Dh, 0Ah, '$'
+                72 61 64 6F 2E 24 0D 0A 24          
+[  13]    0170: 32 2E 20 50 61 72 61 20 52 65 63 74   option2 db '2. Para Rectangulo.$', 0Dh, 0Ah, '$'
+                61 6E 67 75 6C 6F 2E 24 0D 0A 24    
+[  14]    0187: 33 2E 20 50 61 72 61 20 54 72 69 61   option3 db '3. Para Triangulo Equilatero.$', 0Dh, 0Ah, '$'
+                6E 67 75 6C 6F 20 45 71 75 69 6C 61 
+                74 65 72 6F 2E 24 0D 0A 24          
+[  15]    01A8: 34 2E 20 50 61 72 61 20 52 6F 6D 62   option4 db '4. Para Rombo.$', 0Dh, 0Ah, '$'
+                6F 2E 24 0D 0A 24                   
+[  16]    01BA: 35 2E 20 50 61 72 61 20 50 65 6E 74   option5 db '5. Para Pentagono.$', 0Dh, 0Ah, '$'
+                61 67 6F 6E 6F 2E 24 0D 0A 24       
+[  17]    01D0: 36 2E 20 50 61 72 61 20 48 65 78 61   option6 db '6. Para Hexagono.$', 0Dh, 0Ah, '$'
+                67 6F 6E 6F 2E 24 0D 0A 24          
+[  18]    01E5: 37 2E 20 50 61 72 61 20 43 69 72 63   option7 db '7. Para Circulo.$', 0Dh, 0Ah, '$'
+                75 6C 6F 2E 24 0D 0A 24             
+[  19]    01F9: 38 2E 20 50 61 72 61 20 54 72 61 70   option8 db '8. Para Trapecio.$', 0Dh, 0Ah, '$'
+                65 63 69 6F 2E 24 0D 0A 24          
+[  20]    020E: 39 2E 20 50 61 72 61 20 50 61 72 61   option9 db '9. Para Paralelogramo.$', 0Dh, 0Ah, '$'
+                6C 65 6C 6F 67 72 61 6D 6F 2E 24 0D 
+                0A 24                               
+[  21]    0228: 30 2E 20 50 61 72 61 20 74 65 72 6D   close   db '0. Para terminar programa.$', 0Dh, 0Ah, '$'
+                69 6E 61 72 20 70 72 6F 67 72 61 6D 
+                61 2E 24 0D 0A 24                   
+[  22]    0246: 4F 70 63 69 6F 6E 20 69 6E 76 61 6C   invalid db 'Opcion invalida. Por favor seleccione una opcion valida.$', 0Dh, 0Ah, '$'
+                69 64 61 2E 20 50 6F 72 20 66 61 76 
+                6F 72 20 73 65 6C 65 63 63 69 6F 6E 
+                65 20 75 6E 61 20 6F 70 63 69 6F 6E 
+                20 76 61 6C 69 64 61 2E 24 0D 0A 24 
+                                                    
+[  23]    0282:                                       blank_char db ''  ; Carï¿½cter espacio para usar en la funciï¿½n de retroceso
+[  24]    0282: 31 2E 20 50 61 72 61 20 43 6F 6E 74   continue_program db '1. Para Continuar.$', 0Dh, 0Ah, '$'
+                69 6E 75 61 72 2E 24 0D 0A 24       
+[  25]    0298: 32 2E 20 50 61 72 61 20 53 61 6C 69   close_program db '2. Para Salir.$', 0Dh, 0Ah, '$'
+                72 2E 24 0D 0A 24                   
+[  26]        :                                       
+[  27]        :                                       ; Mensajes para opciones seleccionadas
+[  28]    02AA: 48 61 73 20 73 65 6C 65 63 63 69 6F   square db 'Has seleccionado Cuadrado.$', 0Dh, 0Ah, '$'
+                6E 61 64 6F 20 43 75 61 64 72 61 64 
+                6F 2E 24 0D 0A 24                   
+[  29]    02C8: 48 61 73 20 73 65 6C 65 63 63 69 6F   rectangle db 'Has seleccionado Rectangulo.$', 0Dh, 0Ah, '$'
+                6E 61 64 6F 20 52 65 63 74 61 6E 67 
+                75 6C 6F 2E 24 0D 0A 24             
+[  30]    02E8: 48 61 73 20 73 65 6C 65 63 63 69 6F   triangle db 'Has seleccionado Triangulo Equilatero.$', 0Dh, 0Ah, '$'
+                6E 61 64 6F 20 54 72 69 61 6E 67 75 
+                6C 6F 20 45 71 75 69 6C 61 74 65 72 
+                6F 2E 24 0D 0A 24                   
+[  31]    0312: 48 61 73 20 73 65 6C 65 63 63 69 6F   rhombus db 'Has seleccionado Rombo.$', 0Dh, 0Ah, '$'
+                6E 61 64 6F 20 52 6F 6D 62 6F 2E 24 
+                0D 0A 24                            
+[  32]    032D: 48 61 73 20 73 65 6C 65 63 63 69 6F   pentagon db 'Has seleccionado Pentagono.$', 0Dh, 0Ah, '$'
+                6E 61 64 6F 20 50 65 6E 74 61 67 6F 
+                6E 6F 2E 24 0D 0A 24                
+[  33]    034C: 48 61 73 20 73 65 6C 65 63 63 69 6F   hexagon db 'Has seleccionado Hexagono.$', 0Dh, 0Ah, '$'
+                6E 61 64 6F 20 48 65 78 61 67 6F 6E 
+                6F 2E 24 0D 0A 24                   
+[  34]    036A: 48 61 73 20 73 65 6C 65 63 63 69 6F   circle db 'Has seleccionado Circulo.$', 0Dh, 0Ah, '$'
+                6E 61 64 6F 20 43 69 72 63 75 6C 6F 
+                2E 24 0D 0A 24                      
+[  35]    0387: 48 61 73 20 73 65 6C 65 63 63 69 6F   trapezoid db 'Has seleccionado Trapecio.$', 0Dh, 0Ah, '$'
+                6E 61 64 6F 20 54 72 61 70 65 63 69 
+                6F 2E 24 0D 0A 24                   
+[  36]    03A5: 48 61 73 20 73 65 6C 65 63 63 69 6F   parallelogram db 'Has seleccionado Paralelogramo.$', 0Dh, 0Ah, '$'
+                6E 61 64 6F 20 50 61 72 61 6C 65 6C 
+                6F 67 72 61 6D 6F 2E 24 0D 0A 24    
+[  37]    03C8: 50 72 6F 67 72 61 6D 61 20 66 69 6E   finish  db 'Programa finalizado.$', 0Dh, 0Ah, '$'
+                61 6C 69 7A 61 64 6F 2E 24 0D 0A 24 
+                                                    
+[  38]        :                                       
+[  39]        :                                       ; Mensajes para la colecta de datos
+[  40]    03E0: 49 6E 67 72 65 73 61 20 65 6C 20 76   lado db 'Ingresa el valor del lado: $', 0Dh, 0Ah, '$'
+                61 6C 6F 72 20 64 65 6C 20 6C 61 64 
+                6F 3A 20 24 0D 0A 24                
+[  41]    03FF: 49 6E 67 72 65 73 61 20 65 6C 20 76   lado1 db 'Ingresa el valor del lado 1: $', 0Dh, 0Ah, '$'
+                61 6C 6F 72 20 64 65 6C 20 6C 61 64 
+                6F 20 31 3A 20 24 0D 0A 24          
+[  42]    0420: 49 6E 67 72 65 73 61 20 65 6C 20 76   lado2 db 'Ingresa el valor del lado 2: $', 0Dh, 0Ah, '$'
+                61 6C 6F 72 20 64 65 6C 20 6C 61 64 
+                6F 20 32 3A 20 24 0D 0A 24          
+[  43]    0441: 49 6E 67 72 65 73 61 20 65 6C 20 76   Diago1 db 'Ingresa el valor del Diagonal 1: $', 0Dh, 0Ah, '$'
+                61 6C 6F 72 20 64 65 6C 20 44 69 61 
+                67 6F 6E 61 6C 20 31 3A 20 24 0D 0A 
+                24                                  
+[  44]    0466: 49 6E 67 72 65 73 61 20 65 6C 20 76   Diago2 db 'Ingresa el valor del Diagonal 2: $', 0Dh, 0Ah, '$'
+                61 6C 6F 72 20 64 65 6C 20 44 69 61 
+                67 6F 6E 61 6C 20 32 3A 20 24 0D 0A 
+                24                                  
+[  45]    048B: 49 6E 67 72 65 73 61 20 65 6C 20 76   altura db 'Ingresa el valor del altura: $', 0Dh, 0Ah, '$'
+                61 6C 6F 72 20 64 65 6C 20 61 6C 74 
+                75 72 61 3A 20 24 0D 0A 24          
+[  46]    04AC: 49 6E 67 72 65 73 61 20 65 6C 20 76   radio db 'Ingresa el valor del radio: $', 0Dh, 0Ah, '$'
+                61 6C 6F 72 20 64 65 6C 20 72 61 64 
+                69 6F 3A 20 24 0D 0A 24             
+[  47]    04CC: 49 6E 67 72 65 73 61 20 65 6C 20 76   base db 'Ingresa el valor del lado 1 (base): $', 0Dh, 0Ah, '$'
+                61 6C 6F 72 20 64 65 6C 20 6C 61 64 
+                6F 20 31 20 28 62 61 73 65 29 3A 20 
+                24 0D 0A 24                         
+[  48]    04F4: 49 6E 67 72 65 73 61 20 65 6C 20 76   base_menor db 'Ingresa el valor de la base menor: $', 0Dh, 0Ah, '$'
+                61 6C 6F 72 20 64 65 20 6C 61 20 62 
+                61 73 65 20 6D 65 6E 6F 72 3A 20 24 
+                0D 0A 24                            
+[  49]    051B: 49 6E 67 72 65 73 61 20 65 6C 20 76   base_mayor db 'Ingresa el valor de la base mayor: $', 0Dh, 0Ah, '$'
+                61 6C 6F 72 20 64 65 20 6C 61 20 62 
+                61 73 65 20 6D 61 79 6F 72 3A 20 24 
+                0D 0A 24                            
+[  50]        :                                       
+[  51]    0542: 41 72 65 61 3A 20 24 0D 0A 24         area db 'Area: $', 0Dh, 0Ah, '$'
+[  52]    054C: 50 65 72 69 6D 65 74 72 6F 3A 20 24   perimetro db 'Perimetro: $', 0Dh, 0Ah, '$'
+                0D 0A 24                            
+[  53]        :                                       
+[  54]        :                                       ;Mensajes de error
+[  55]    055B: 4F 74 72 6F 20 70 75 6E 74 6F 20 64   mas_de_un_punto_decimal db 'Otro punto decinmal??? :v $', 0Dh, 0Ah, '$'
+                65 63 69 6E 6D 61 6C 3F 3F 3F 3A 76 
+                20 24 0D 0A 24                      
+[  56]        :                                       
+[  57]        :                                       ;--------------------------------------BUFFER--------------------------------------
+[  58]        :                                       
+[  59]    0578: 24 24 24 24 24 24 24 24 24 24         input_buffer db 10 dup('$')  ; Buffer para almacenar la entrada del usuario
+[  60]    0582: 24                                    buffer_end db '$'           ; Terminador para la cadena
+[  61]        :                                       
+[  62]        :                                       
+[  63]        :                                       ;Variables para la recoleccion de datos del buffer
+[  64]    0583: 00 00                                 n_buffer_ent_alta DW ?            ; Parte entera del numero 1 (Parte alta)
+[  65]    0585: 00 00                                 n_buffer_ent_baja DW ?            ; Parte entera del numero 1 (Parte baja)
+[  66]    0587: 00 00                                 n_buffer_dec_alta DW ?            ; Parte decimal del numero 1 (Parte alta)
+[  67]    0589: 00 00                                 n_buffer_dec_baja DW ?            ; Parte decimal del numero 1 (Parte baja
+[  68]        :                                       
+[  69]        :                                       ;Variables para la multiplicacion
+[  70]    058B: 00 00                                 n1_ent_alta DW ?            ; Parte entera del numero 1 (Parte alta)
+[  71]    058D: 00 00                                 n1_ent_baja DW ?            ; Parte entera del numero 1 (Parte baja)
+[  72]    058F: 00 00                                 n1_dec_alta DW ?            ; Parte decimal del numero 1 (Parte alta)
+[  73]    0591: 00 00                                 n1_dec_baja DW ?            ; Parte decimal del numero 1 (Parte baja)
+[  74]        :                                       
+[  75]    0593: 00 00                                 n2_ent_alta DW ?            ; Parte entera del numero 2 (Parte alta)
+[  76]    0595: 00 00                                 n2_ent_baja DW ?            ; Parte entera del numero 2 (Parte baja)
+[  77]    0597: 00 00                                 n2_dec_alta DW ?            ; Parte decimal del numero 2 (Parte alta)
+[  78]    0599: 00 00                                 n2_dec_baja DW ?            ; Parte decimal del numero 2 (Parte baja)
+[  79]        :                                       
+[  80]        :                                       ;Variables para almacenar la multiplicacion del n1 por el entero de n2
+[  81]    059B: 00 00                                 resultado_1_ent_alta DW ?   ; Parte entera del numero resultante (Parte alta)
+[  82]    059D: 00 00                                 resultado_1_ent_baja DW ?   ; Parte entera del numero resultante (Parte baja)
+[  83]    059F: 00 00                                 resultado_1_dec_alta DW ?   ; Parte decimal del numero resultante (Parte alta)
+[  84]    05A1: 00 00                                 resultado_1_dec_baja DW ?   ; Parte decimal del numero resultante (Parte baja)
+[  85]        :                                       
+[  86]        :                                       ;Variables para almacenar la multiplicacion del n1 por el decimal de n2
+[  87]    05A3: 00 00                                 resultado_2_ent_alta DW ?   ; Parte entera del numero resultante (Parte alta)
+[  88]    05A5: 00 00                                 resultado_2_ent_baja DW ?   ; Parte entera del numero resultante (Parte baja)
+[  89]    05A7: 00 00                                 resultado_2_dec_alta DW ?   ; Parte decimal del numero resultante (Parte alta)
+[  90]    05A9: 00 00                                 resultado_2_dec_baja DW ?   ; Parte decimal del numero resultante (Parte baja)
+[  91]        :                                       
+[  92]        :                                       ;Resultado combinado de la multiplicacion
+[  93]    05AB: 00 00                                 resultado_f_ent_alta DW ?   ; Parte entera del numero resultante (Parte alta)
+[  94]    05AD: 00 00                                 resultado_f_ent_baja DW ?   ; Parte entera del numero resultante (Parte baja)
+[  95]    05AF: 00 00                                 resultado_f_dec_alta DW ?   ; Parte decimal del numero resultante (Parte alta)
+[  96]    05B1: 00 00                                 resultado_f_dec_baja DW ?   ; Parte decimal del numero resultante (Parte baja)
+[  97]        :                                       
+[  98]        :                                       ;Variables para el almacenamiento del area y perimetro
+[  99]    05B3: 00 00                                 area_ent_alta DW ?            ; Parte entera del area (Parte alta)
+[ 100]    05B5: 00 00                                 area_ent_baja DW ?            ; Parte entera del area  (Parte baja)
+[ 101]    05B7: 00 00                                 area_dec_alta DW ?            ; Parte decimal del area  (Parte alta)
+[ 102]    05B9: 00 00                                 area_dec_baja DW ?            ; Parte decimal del area  (Parte baja)
+[ 103]        :                                       
+[ 104]    05BB: 00 00                                 perimetro_ent_alta DW ?            ; Parte entera del area (Parte alta)
+[ 105]    05BD: 00 00                                 perimetro_ent_baja DW ?            ; Parte entera del area  (Parte baja)
+[ 106]    05BF: 00 00                                 perimetro_dec_alta DW ?            ; Parte decimal del area  (Parte alta)
+[ 107]    05C1: 00 00                                 perimetro_dec_baja DW ?            ; Parte decimal del area  (Parte baja)
+[ 108]        :                                       
+[ 109]        :                                       ;Variables para el almacenamiento de los numeros recolectados
+[ 110]    05C3: 00 00                                 lado1_ent_alta DW ?
+[ 111]    05C5: 00 00                                 lado1_ent_baja DW ?
+[ 112]    05C7: 00 00                                 lado1_dec_alta DW ?
+[ 113]    05C9: 00 00                                 lado1_dec_baja DW ?
+[ 114]        :                                       
+[ 115]    05CB: 00 00                                 lado2_ent_alta DW ?
+[ 116]    05CD: 00 00                                 lado2_ent_baja DW ?
+[ 117]    05CF: 00 00                                 lado2_dec_alta DW ?
+[ 118]    05D1: 00 00                                 lado2_dec_baja DW ?
+[ 119]        :                                       
+[ 120]    05D3: 00 00                                 base_mayor_ent_alta DW ?
+[ 121]    05D5: 00 00                                 base_mayor_ent_baja DW ?
+[ 122]    05D7: 00 00                                 base_mayor_dec_alta DW ?
+[ 123]    05D9: 00 00                                 base_mayor_dec_baja DW ?
+[ 124]        :                                       
+[ 125]    05DB: 00 00                                 base_menor_ent_alta DW ?
+[ 126]    05DD: 00 00                                 base_menor_ent_baja DW ?
+[ 127]    05DF: 00 00                                 base_menor_dec_alta DW ?
+[ 128]    05E1: 00 00                                 base_menor_dec_baja DW ?
+[ 129]    05E3: 00 00                                 diago1_ent_alta DW ?
+[ 130]    05E5: 00 00                                 diago1_ent_baja DW ?
+[ 131]    05E7: 00 00                                 diago1_dec_alta DW ?
+[ 132]    05E9: 00 00                                 diago1_dec_baja DW ?
+[ 133]        :                                       
+[ 134]    05EB: 00 00                                 diago2_ent_alta DW ?
+[ 135]    05ED: 00 00                                 diago2_ent_baja DW ?
+[ 136]    05EF: 00 00                                 diago2_dec_alta DW ?
+[ 137]    05F1: 00 00                                 diago2_dec_baja DW ?
+[ 138]        :                                       
+[ 139]    05F3: 00 00                                 altura_ent_alta DW ?
+[ 140]    05F5: 00 00                                 altura_ent_baja DW ?
+[ 141]    05F7: 00 00                                 altura_dec_alta DW ?
+[ 142]    05F9: 00 00                                 altura_dec_baja DW ?
+[ 143]        :                                       
+[ 144]    05FB: 00 00                                 apotema_ent_alta DW ?
+[ 145]    05FD: 00 00                                 apotema_ent_baja DW ?
+[ 146]    05FF: 00 00                                 apotema_dec_alta DW ?
+[ 147]    0601: 00 00                                 apotema_dec_baja DW ?
+[ 148]        :                                       
+[ 149]        :                                       ;Variables para operaciones temporales (Trapecio)
+[ 150]    0603: 00 00                                 suma_1_ent_alta DW ?
+[ 151]    0605: 00 00                                 suma_1_ent_baja DW ?
+[ 152]    0607: 00 00                                 suma_1_dec_alta DW ?
+[ 153]    0609: 00 00                                 suma_1_dec_baja DW ?
+[ 154]        :                                       
+[ 155]    060B: 00 00                                 suma_2_ent_alta DW ?
+[ 156]    060D: 00 00                                 suma_2_ent_baja DW ?
+[ 157]    060F: 00 00                                 suma_2_dec_alta DW ?
+[ 158]    0611: 00 00                                 suma_2_dec_baja DW ?
+[ 159]        :                                       
+[ 160]    0613: 00 00                                 mul_1_ent_alta DW ?
+[ 161]    0615: 00 00                                 mul_1_ent_baja DW ?
+[ 162]    0617: 00 00                                 mul_1_dec_alta DW ?
+[ 163]    0619: 00 00                                 mul_1_dec_baja DW ?
+[ 164]        :                                       
+[ 165]        :                                       ;--------------------------------------DOCUMENTACION GENERAL--------------------------------------
+[ 166]        :                                       
+[ 167]        :                                       ; Para la funcion MULTIPLICACION las variables estan almacenadas de esta forma:
+[ 168]        :                                       ; AX, resultado_f_ent_baja
+[ 169]        :                                       ; DX, resultado_f_ent_alta
+[ 170]        :                                       ; CX, resultado_f_dec_baja
+[ 171]        :                                       
+[ 172]        :                                       ; Para la funcion STR_TO_INT los numeros obtenidos en el buffer estaran guardado de esta forma:
+[ 173]        :                                       ; n_buffer_ent_baja tendra la parte entera (solo baja debido a que el numero maximo es 9999.99)
+[ 174]        :                                       ; n_buffer_dec_baja tendra la parte decimal (solo baja debido a que el numero maximo es 9999.99)
+[ 175]        :                                       
+[ 176]        :                                       ; La funcion CARGA_DE_VALORES_DEL_AREA se utiliza cuando hay una multiplicacion y el resultado
+[ 177]        :                                       ; va directamente a los valores de area
+[ 178]        :                                       
+[ 179]        :                                       ; La funcion CARGA_DE_VALORES_DE_PERIMETRO se utiliza cuando hay una multiplicacion y el resultado
+[ 180]        :                                       ; va directamente a los valores de perimetro
+[ 181]        :                                       
+[ 182]        :                                       
+[ 183]        :                                       
+[ 184]        :                                       .code
+[ 185]    0620:                                       main proc
+[ 186]        :                                       ; Inicializa el segmento de datos
+[ 187]    0620: B8 10 00                              mov ax, @data
+[ 188]    0623: 8E D8                                 mov ds, ax
+[ 189]        :                                       
+[ 190]    0625:                                       start:
+[ 191]        :                                       ;Limpia las variables resultado
+[ 192]        :                                       
+[ 193]    0625: C7 06 83 04 00 00                     MOV n_buffer_ent_alta, 0            ; Parte entera del numero 1 (Parte alta)
+[ 194]    062B: C7 06 85 04 00 00                     MOV n_buffer_ent_baja, 0            ; Parte entera del numero 1 (Parte baja)
+[ 195]    0631: C7 06 87 04 00 00                     MOV n_buffer_dec_alta, 0            ; Parte decimal del numero 1 (Parte alta)
+[ 196]    0637: C7 06 89 04 00 00                     MOV n_buffer_dec_baja, 0            ; Parte decimal del numero 1 (Parte baja
+[ 197]        :                                       
+[ 198]        :                                       ;Variables para la multiplicacion
+[ 199]    063D: C7 06 8B 04 00 00                     MOV n1_ent_alta, 0            ; Parte entera del numero 1 (Parte alta)
+[ 200]    0643: C7 06 8D 04 00 00                     MOV n1_ent_baja, 0            ; Parte entera del numero 1 (Parte baja)
+[ 201]    0649: C7 06 8F 04 00 00                     MOV n1_dec_alta, 0            ; Parte decimal del numero 1 (Parte alta)
+[ 202]    064F: C7 06 91 04 00 00                     MOV n1_dec_baja, 0            ; Parte decimal del numero 1 (Parte baja)
+[ 203]        :                                       
+[ 204]    0655: C7 06 93 04 00 00                     MOV n2_ent_alta, 0            ; Parte entera del numero 2 (Parte alta)
+[ 205]    065B: C7 06 95 04 00 00                     MOV n2_ent_baja, 0            ; Parte entera del numero 2 (Parte baja)
+[ 206]    0661: C7 06 97 04 00 00                     MOV n2_dec_alta, 0            ; Parte decimal del numero 2 (Parte alta)
+[ 207]    0667: C7 06 99 04 00 00                     MOV n2_dec_baja, 0            ; Parte decimal del numero 2 (Parte baja)
+[ 208]        :                                       
+[ 209]        :                                       ;Variables para almacenar la multiplicacion del n1 por el entero de n2
+[ 210]    066D: C7 06 9B 04 00 00                     MOV resultado_1_ent_alta, 0   ; Parte entera del numero resultante (Parte alta)
+[ 211]    0673: C7 06 9D 04 00 00                     MOV resultado_1_ent_baja, 0   ; Parte entera del numero resultante (Parte baja)
+[ 212]    0679: C7 06 9F 04 00 00                     MOV resultado_1_dec_alta, 0   ; Parte decimal del numero resultante (Parte alta)
+[ 213]    067F: C7 06 A1 04 00 00                     MOV resultado_1_dec_baja, 0   ; Parte decimal del numero resultante (Parte baja)
+[ 214]        :                                       
+[ 215]        :                                       ;Variables para almacenar la multiplicacion del n1 por el decimal de n2
+[ 216]    0685: C7 06 A3 04 00 00                     MOV resultado_2_ent_alta, 0   ; Parte entera del numero resultante (Parte alta)
+[ 217]    068B: C7 06 A5 04 00 00                     MOV resultado_2_ent_baja, 0   ; Parte entera del numero resultante (Parte baja)
+[ 218]    0691: C7 06 A7 04 00 00                     MOV resultado_2_dec_alta, 0   ; Parte decimal del numero resultante (Parte alta)
+[ 219]    0697: C7 06 A9 04 00 00                     MOV resultado_2_dec_baja, 0   ; Parte decimal del numero resultante (Parte baja)
+[ 220]        :                                       
+[ 221]        :                                       ;Resultado combinado de la multiplicacion
+[ 222]    069D: C7 06 AB 04 00 00                     MOV resultado_f_ent_alta, 0   ; Parte entera del numero resultante (Parte alta)
+[ 223]    06A3: C7 06 AD 04 00 00                     MOV resultado_f_ent_baja, 0   ; Parte entera del numero resultante (Parte baja)
+[ 224]    06A9: C7 06 AF 04 00 00                     MOV resultado_f_dec_alta, 0   ; Parte decimal del numero resultante (Parte alta)
+[ 225]    06AF: C7 06 B1 04 00 00                     MOV resultado_f_dec_baja, 0   ; Parte decimal del numero resultante (Parte baja)
+[ 226]        :                                       
+[ 227]        :                                       ; Parte decimal del area  (Parte baja)
+[ 228]        :                                       
+[ 229]        :                                       ;Variables para el almacenamiento de los numeros recolectados
+[ 230]    06B5: C7 06 C3 04 00 00                     MOV lado1_ent_alta, 0
+[ 231]    06BB: C7 06 C5 04 00 00                     MOV lado1_ent_baja, 0
+[ 232]    06C1: C7 06 C7 04 00 00                     MOV lado1_dec_alta, 0
+[ 233]    06C7: C7 06 C9 04 00 00                     MOV lado1_dec_baja, 0
+[ 234]        :                                       
+[ 235]    06CD: C7 06 CB 04 00 00                     MOV lado2_ent_alta, 0
+[ 236]    06D3: C7 06 CD 04 00 00                     MOV lado2_ent_baja, 0
+[ 237]    06D9: C7 06 CF 04 00 00                     MOV lado2_dec_alta, 0
+[ 238]    06DF: C7 06 D1 04 00 00                     MOV lado2_dec_baja, 0
+[ 239]        :                                       
+[ 240]    06E5: C7 06 D3 04 00 00                     MOV base_mayor_ent_alta, 0
+[ 241]    06EB: C7 06 D5 04 00 00                     MOV base_mayor_ent_baja, 0
+[ 242]    06F1: C7 06 D7 04 00 00                     MOV base_mayor_dec_alta, 0
+[ 243]    06F7: C7 06 D9 04 00 00                     MOV base_mayor_dec_baja, 0
+[ 244]        :                                       
+[ 245]    06FD: C7 06 DB 04 00 00                     MOV base_menor_ent_alta, 0
+[ 246]    0703: C7 06 DD 04 00 00                     MOV base_menor_ent_baja, 0
+[ 247]    0709: C7 06 DF 04 00 00                     MOV base_menor_dec_alta, 0
+[ 248]    070F: C7 06 E1 04 00 00                     MOV base_menor_dec_baja, 0
+[ 249]    0715: C7 06 E3 04 00 00                     MOV diago1_ent_alta, 0
+[ 250]    071B: C7 06 E5 04 00 00                     MOV diago1_ent_baja, 0
+[ 251]    0721: C7 06 E7 04 00 00                     MOV diago1_dec_alta, 0
+[ 252]    0727: C7 06 E9 04 00 00                     MOV diago1_dec_baja, 0
+[ 253]        :                                       
+[ 254]    072D: C7 06 EB 04 00 00                     MOV diago2_ent_alta, 0
+[ 255]    0733: C7 06 ED 04 00 00                     MOV diago2_ent_baja, 0
+[ 256]    0739: C7 06 EF 04 00 00                     MOV diago2_dec_alta, 0
+[ 257]    073F: C7 06 F1 04 00 00                     MOV diago2_dec_baja, 0
+[ 258]        :                                       
+[ 259]    0745: C7 06 F3 04 00 00                     MOV altura_ent_alta, 0
+[ 260]    074B: C7 06 F5 04 00 00                     MOV altura_ent_baja, 0
+[ 261]    0751: C7 06 F7 04 00 00                     MOV altura_dec_alta, 0
+[ 262]    0757: C7 06 F9 04 00 00                     MOV altura_dec_baja, 0
+[ 263]        :                                       
+[ 264]    075D: C7 06 FB 04 00 00                     MOV apotema_ent_alta, 0
+[ 265]    0763: C7 06 FD 04 00 00                     MOV apotema_ent_baja, 0
+[ 266]    0769: C7 06 FF 04 00 00                     MOV apotema_dec_alta, 0
+[ 267]    076F: C7 06 01 05 00 00                     MOV apotema_dec_baja, 0
+[ 268]        :                                       
+[ 269]        :                                       ;Variables para operaciones temporales (Trapecio)
+[ 270]    0775: C7 06 03 05 00 00                     MOV suma_1_ent_alta, 0
+[ 271]    077B: C7 06 05 05 00 00                     MOV suma_1_ent_baja, 0
+[ 272]    0781: C7 06 07 05 00 00                     MOV suma_1_dec_alta, 0
+[ 273]    0787: C7 06 09 05 00 00                     MOV suma_1_dec_baja, 0
+[ 274]        :                                       
+[ 275]    078D: C7 06 0B 05 00 00                     MOV suma_2_ent_alta, 0
+[ 276]    0793: C7 06 0D 05 00 00                     MOV suma_2_ent_baja, 0
+[ 277]    0799: C7 06 0F 05 00 00                     MOV suma_2_dec_alta, 0
+[ 278]    079F: C7 06 11 05 00 00                     MOV suma_2_dec_baja, 0
+[ 279]        :                                       
+[ 280]    07A5: C7 06 13 05 00 00                     MOV mul_1_ent_alta, 0
+[ 281]    07AB: C7 06 15 05 00 00                     MOV mul_1_ent_baja, 0
+[ 282]    07B1: C7 06 17 05 00 00                     MOV mul_1_dec_alta, 0
+[ 283]    07B7: C7 06 19 05 00 00                     MOV mul_1_dec_baja, 0
+[ 284]        :                                       
+[ 285]    07BD: C7 06 B3 04 00 00                     MOV area_ent_alta, 0
+[ 286]    07C3: C7 06 B5 04 00 00                     MOV area_ent_baja, 0
+[ 287]    07C9: C7 06 B7 04 00 00                     MOV area_dec_alta, 0
+[ 288]    07CF: C7 06 B9 04 00 00                     MOV area_dec_baja, 0
+[ 289]        :                                       
+[ 290]    07D5: C7 06 BB 04 00 00                     MOV perimetro_ent_alta, 0
+[ 291]    07DB: C7 06 BD 04 00 00                     MOV perimetro_ent_baja, 0
+[ 292]    07E1: C7 06 BF 04 00 00                     MOV perimetro_dec_alta, 0
+[ 293]    07E7: C7 06 C1 04 00 00                     MOV perimetro_dec_baja, 0
+[ 294]        :                                       
+[ 295]        :                                       ; Mostrar mensaje de bienvenida
+[ 296]    07ED: B4 09                                 mov ah, 09h
+[ 297]    07EF: BA 00 00                              lea dx, menu
+[ 298]    07F2: CD 21                                 int 21h
+[ 299]        :                                       ; Mostrar salto de linea despues del mensaje de bienvenida
+[ 300]    07F4: B4 09                                 mov ah, 09h
+[ 301]    07F6: BA 1D 00                              lea dx, newline
+[ 302]    07F9: CD 21                                 int 21h
+[ 303]        :                                       
+[ 304]        :                                       ; Mostrar prompt
+[ 305]    07FB: B4 09                                 mov ah, 09h
+[ 306]    07FD: BA 20 00                              lea dx, prompt
+[ 307]    0800: CD 21                                 int 21h
+[ 308]        :                                       
+[ 309]        :                                       ; Mostrar salto de linea antes de las opciones del menu
+[ 310]    0802: B4 09                                 mov ah, 09h
+[ 311]    0804: BA 1D 00                              lea dx, newline
+[ 312]    0807: CD 21                                 int 21h
+[ 313]        :                                       
+[ 314]        :                                       ; Mostrar opciones del menu con saltos de linea
+[ 315]    0809: B4 09                                 mov ah, 09h
+[ 316]    080B: BA 5B 00                              lea dx, option1
+[ 317]    080E: CD 21                                 int 21h
+[ 318]    0810: BA 1D 00                              lea dx, newline
+[ 319]    0813: CD 21                                 int 21h
+[ 320]        :                                       
+[ 321]    0815: B4 09                                 mov ah, 09h
+[ 322]    0817: BA 70 00                              lea dx, option2
+[ 323]    081A: CD 21                                 int 21h
+[ 324]    081C: BA 1D 00                              lea dx, newline
+[ 325]    081F: CD 21                                 int 21h
+[ 326]        :                                       
+[ 327]    0821: B4 09                                 mov ah, 09h
+[ 328]    0823: BA 87 00                              lea dx, option3
+[ 329]    0826: CD 21                                 int 21h
+[ 330]    0828: BA 1D 00                              lea dx, newline
+[ 331]    082B: CD 21                                 int 21h
+[ 332]        :                                       
+[ 333]    082D: B4 09                                 mov ah, 09h
+[ 334]    082F: BA A8 00                              lea dx, option4
+[ 335]    0832: CD 21                                 int 21h
+[ 336]    0834: BA 1D 00                              lea dx, newline
+[ 337]    0837: CD 21                                 int 21h
+[ 338]        :                                       
+[ 339]    0839: B4 09                                 mov ah, 09h
+[ 340]    083B: BA BA 00                              lea dx, option5
+[ 341]    083E: CD 21                                 int 21h
+[ 342]    0840: BA 1D 00                              lea dx, newline
+[ 343]    0843: CD 21                                 int 21h
+[ 344]        :                                       
+[ 345]    0845: B4 09                                 mov ah, 09h
+[ 346]    0847: BA D0 00                              lea dx, option6
+[ 347]    084A: CD 21                                 int 21h
+[ 348]    084C: BA 1D 00                              lea dx, newline
+[ 349]    084F: CD 21                                 int 21h
+[ 350]        :                                       
+[ 351]    0851: B4 09                                 mov ah, 09h
+[ 352]    0853: BA E5 00                              lea dx, option7
+[ 353]    0856: CD 21                                 int 21h
+[ 354]    0858: BA 1D 00                              lea dx, newline
+[ 355]    085B: CD 21                                 int 21h
+[ 356]        :                                       
+[ 357]    085D: B4 09                                 mov ah, 09h
+[ 358]    085F: BA F9 00                              lea dx, option8
+[ 359]    0862: CD 21                                 int 21h
+[ 360]    0864: BA 1D 00                              lea dx, newline
+[ 361]    0867: CD 21                                 int 21h
+[ 362]        :                                       
+[ 363]    0869: B4 09                                 mov ah, 09h
+[ 364]    086B: BA 0E 01                              lea dx, option9
+[ 365]    086E: CD 21                                 int 21h
+[ 366]    0870: BA 1D 00                              lea dx, newline
+[ 367]    0873: CD 21                                 int 21h
+[ 368]        :                                       
+[ 369]    0875: B4 09                                 mov ah, 09h
+[ 370]    0877: BA 28 01                              lea dx, close
+[ 371]    087A: CD 21                                 int 21h
+[ 372]    087C: BA 1D 00                              lea dx, newline
+[ 373]    087F: CD 21                                 int 21h
+[ 374]        :                                       
+[ 375]        :                                       ; Leer opcion del usuario
+[ 376]    0881: B4 01                                 mov ah, 01h       ; Funcion para leer un caracter del teclado
+[ 377]    0883: CD 21                                 int 21h
+[ 378]    0885: 8A D8                                 mov bl, al        ; Guardar el caracter leido en BL
+[ 379]        :                                       
+[ 380]        :                                       ; Mostrar salto de linea despues de leer la opcion
+[ 381]    0887: B4 09                                 mov ah, 09h
+[ 382]    0889: BA 1D 00                              lea dx, newline
+[ 383]    088C: CD 21                                 int 21h
+[ 384]        :                                       
+[ 385]        :                                       ; Manejo de opcion
+[ 386]    088E: 80 FB 31                              cmp bl, '1'
+[ 387]    0891: 74 43                                 je square_option
+[ 388]    0893: 80 FB 32                              cmp bl, '2'
+[ 389]    0896: 74 47                                 je rectangle_option
+[ 390]    0898: 80 FB 33                              cmp bl, '3'
+[ 391]    089B: 74 4C                                 je triangle_option
+[ 392]    089D: 80 FB 34                              cmp bl, '4'
+[ 393]    08A0: 74 51                                 je rhombus_option
+[ 394]    08A2: 80 FB 35                              cmp bl, '5'
+[ 395]    08A5: 74 56                                 je pentagon_option
+[ 396]    08A7: 80 FB 36                              cmp bl, '6'
+[ 397]    08AA: 74 5B                                 je hexagon_option
+[ 398]    08AC: 80 FB 37                              cmp bl, '7'
+[ 399]    08AF: 74 60                                 je circle_option
+[ 400]    08B1: 80 FB 38                              cmp bl, '8'
+[ 401]    08B4: 74 65                                 je trapezoid_option
+[ 402]    08B6: 80 FB 39                              cmp bl, '9'
+[ 403]    08B9: 74 6A                                 je parallelogram_option
+[ 404]    08BB: 80 FB 39                              cmp bl, '9'
+[ 405]    08BE: 74 65                                 je parallelogram_option
+[ 406]    08C0: 80 FB 30                              cmp bl, '0'
+[ 407]    08C3: 74 6A                                 je end_program
+[ 408]        :                                       
+[ 409]        :                                       
+[ 410]        :                                       ; Opcion invalida
+[ 411]    08C5: B4 09                                 mov ah, 09h
+[ 412]    08C7: BA 46 01                              lea dx, invalid
+[ 413]    08CA: CD 21                                 int 21h
+[ 414]        :                                       ; Salto de linea
+[ 415]    08CC: B4 09                                 mov ah, 09h
+[ 416]    08CE: BA 1D 00                              lea dx, newline
+[ 417]    08D1: CD 21                                 int 21h
+[ 418]    08D3: E9 4F FD                              jmp start
+[ 419]        :                                       
+[ 420]    08D6:                                       square_option:
+[ 421]    08D6: B4 09                                 mov ah, 09h
+[ 422]    08D8: BA AA 01                              lea dx, square
+[ 423]    08DB: CD 21                                 int 21h
+[ 424]    08DD: EB 5B                                 jmp CUADRADO
+[ 425]        :                                       
+[ 426]    08DF:                                       rectangle_option:
+[ 427]    08DF: B4 09                                 mov ah, 09h
+[ 428]    08E1: BA C8 01                              lea dx, rectangle
+[ 429]    08E4: CD 21                                 int 21h
+[ 430]    08E6: E9 9F 00                              jmp RECTANGULO
+[ 431]        :                                       
+[ 432]    08E9:                                       triangle_option:
+[ 433]    08E9: B4 09                                 mov ah, 09h
+[ 434]    08EB: BA E8 01                              lea dx, triangle
+[ 435]    08EE: CD 21                                 int 21h
+[ 436]    08F0: E9 6D 01                              jmp TRIANGULO
+[ 437]        :                                       
+[ 438]    08F3:                                       rhombus_option:
+[ 439]    08F3: B4 09                                 mov ah, 09h
+[ 440]    08F5: BA 12 02                              lea dx, rhombus
+[ 441]    08F8: CD 21                                 int 21h
+[ 442]    08FA: E9 08 02                              jmp ROMBO
+[ 443]        :                                       
+[ 444]    08FD:                                       pentagon_option:
+[ 445]    08FD: B4 09                                 mov ah, 09h
+[ 446]    08FF: BA 2D 02                              lea dx, pentagon
+[ 447]    0902: CD 21                                 int 21h
+[ 448]    0904: E9 AB 02                              JMP PENTAGONO
+[ 449]        :                                       
+[ 450]    0907:                                       hexagon_option:
+[ 451]    0907: B4 09                                 mov ah, 09h
+[ 452]    0909: BA 4C 02                              lea dx, hexagon
+[ 453]    090C: CD 21                                 int 21h
+[ 454]    090E: E9 3B 03                              jmp HEXAGONO
+[ 455]        :                                       
+[ 456]    0911:                                       circle_option:
+[ 457]    0911: B4 09                                 mov ah, 09h
+[ 458]    0913: BA 6A 02                              lea dx, circle
+[ 459]    0916: CD 21                                 int 21h
+[ 460]    0918: E9 D6 03                              JMP CIRCULO
+[ 461]        :                                       
+[ 462]    091B:                                       trapezoid_option:
+[ 463]    091B: B4 09                                 mov ah, 09h
+[ 464]    091D: BA 87 02                              lea dx, trapezoid
+[ 465]    0920: CD 21                                 int 21h
+[ 466]    0922: E9 5C 04                              jmp TRAPECIO
+[ 467]        :                                       
+[ 468]    0925:                                       parallelogram_option:
+[ 469]    0925: B4 09                                 mov ah, 09h
+[ 470]    0927: BA A5 02                              lea dx, parallelogram
+[ 471]    092A: CD 21                                 int 21h
+[ 472]    092C: E9 7B 05                              JMP PARALELOGRAMO
+[ 473]        :                                       
+[ 474]    092F:                                       end_program:
+[ 475]        :                                       ; Termina el programa
+[ 476]    092F: B4 09                                 mov ah, 09h
+[ 477]    0931: BA C8 02                              lea dx, finish
+[ 478]    0934: CD 21                                 int 21h
+[ 479]    0936: B4 4C                                 mov ah, 4Ch
+[ 480]    0938: CD 21                                 int 21h
+[ 481]        :                                       
+[ 482]        :                                       
+[ 483]    093A:                                       CUADRADO:
+[ 484]    093A: BA 1D 00                              lea dx, newline
+[ 485]    093D: CD 21                                 int 21h
+[ 486]    093F: BA E0 02                              lea dx, lado
+[ 487]    0942: CD 21                                 int 21h
+[ 488]        :                                       
+[ 489]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[ 490]    0944: E8 43 08                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[ 491]        :                                       
+[ 492]    0947: A1 85 04                              MOV AX, n_buffer_ent_baja
+[ 493]    094A: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[ 494]        :                                       
+[ 495]        :                                       ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
+[ 496]    094E: A3 8D 04                              MOV n1_ent_baja, AX
+[ 497]    0951: A3 95 04                              MOV n2_ent_baJa, AX
+[ 498]        :                                       
+[ 499]    0954: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 500]    0958: 89 16 99 04                           MOV n2_dec_baja, DX
+[ 501]        :                                       
+[ 502]        :                                       ;Se hace la multiplicacion
+[ 503]    095C: E8 A6 06                              CALL MULTIPLICACION
+[ 504]    095F: E8 3A 08                              CALL CARGA_DE_VALORES_DEL_AREA
+[ 505]        :                                       
+[ 506]        :                                       ; Se vuelve al numero del buffer
+[ 507]    0962: A1 85 04                              MOV AX, n_buffer_ent_baja
+[ 508]    0965: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[ 509]        :                                       
+[ 510]        :                                       ;Se mueven a n1 y n2 para realizar la multiplicacion (Perimetro = L*4)
+[ 511]    0969: A3 8D 04                              MOV n1_ent_baja, AX
+[ 512]    096C: C7 06 95 04 04 00                     MOV n2_ent_baJa, 4
+[ 513]        :                                       
+[ 514]    0972: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 515]    0976: C7 06 99 04 00 00                     MOV n2_dec_baja, 0
+[ 516]        :                                       
+[ 517]        :                                       ;Se hace la multiplicacion
+[ 518]    097C: E8 86 06                              CALL MULTIPLICACION
+[ 519]    097F: E8 26 08                              CALL CARGA_DE_VALORES_DE_PERIMETRO
+[ 520]        :                                       
+[ 521]    0982: E8 8D 07                              CALL PRINT_RESULT
+[ 522]    0985: E9 2C 08                              JMP MENU_CONTINUAR
+[ 523]        :                                       
+[ 524]    0988:                                       RECTANGULO:
+[ 525]    0988: BA 1D 00                              lea dx, newline
+[ 526]    098B: CD 21                                 int 21h
+[ 527]    098D: BA E0 02                              lea dx, lado
+[ 528]    0990: CD 21                                 int 21h
+[ 529]        :                                       
+[ 530]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[ 531]    0992: E8 F5 07                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[ 532]        :                                       
+[ 533]    0995: A1 85 04                              MOV AX, n_buffer_ent_baja
+[ 534]    0998: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[ 535]        :                                       
+[ 536]    099C: A3 C5 04                              MOV lado1_ent_baja, AX
+[ 537]    099F: 89 16 C9 04                           MOV lado1_dec_baja, DX
+[ 538]        :                                       
+[ 539]        :                                       ;reinicia el buffer------------------------------------
+[ 540]    09A3: B4 09                                 mov ah, 09h
+[ 541]    09A5: BA 20 03                              lea dx, lado2
+[ 542]    09A8: CD 21                                 int 21h
+[ 543]        :                                       
+[ 544]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[ 545]    09AA: E8 DD 07                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[ 546]        :                                       
+[ 547]    09AD: A1 85 04                              MOV AX, n_buffer_ent_baja
+[ 548]    09B0: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[ 549]        :                                       
+[ 550]    09B4: A3 CD 04                              MOV lado2_ent_baja, AX
+[ 551]    09B7: 89 16 D1 04                           MOV lado2_dec_baja, DX
+[ 552]        :                                       
+[ 553]    09BB: A3 95 04                              MOV n2_ent_baja, AX
+[ 554]    09BE: 89 16 99 04                           MOV n2_dec_baja, DX
+[ 555]        :                                       
+[ 556]    09C2: A1 C5 04                              MOV AX, lado1_ent_baja
+[ 557]    09C5: 8B 16 C9 04                           MOV DX, lado1_dec_baja
+[ 558]        :                                       
+[ 559]        :                                       ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
+[ 560]    09C9: A3 8D 04                              MOV n1_ent_baja, AX
+[ 561]    09CC: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 562]        :                                       
+[ 563]        :                                       ;Se hace la multiplicacion
+[ 564]    09D0: E8 32 06                              CALL MULTIPLICACION
+[ 565]    09D3: E8 C6 07                              CALL CARGA_DE_VALORES_DEL_AREA
+[ 566]        :                                       
+[ 567]        :                                       ; Se vuelve al numero del buffer
+[ 568]    09D6: A1 C5 04                              MOV AX, lado1_ent_baja
+[ 569]    09D9: 8B 16 C9 04                           MOV DX, lado1_dec_baja
+[ 570]        :                                       
+[ 571]        :                                       ;Se mueven a n1 y n2 para realizar la multiplicacion (Perimetro = L*4)
+[ 572]    09DD: A3 8D 04                              MOV n1_ent_baja, AX
+[ 573]    09E0: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 574]        :                                       
+[ 575]    09E4: A1 CD 04                              MOV AX, lado2_ent_baja
+[ 576]    09E7: 8B 16 D1 04                           MOV DX, lado2_dec_baja
+[ 577]        :                                       
+[ 578]    09EB: A3 95 04                              MOV n2_ent_baJa, AX
+[ 579]    09EE: 89 16 99 04                           MOV n2_dec_baja, DX
+[ 580]        :                                       
+[ 581]    09F2: 03 16 99 04                           ADD DX, n2_dec_baja
+[ 582]        :                                       
+[ 583]    09F6: BB 64 00                              MOV BX, 100
+[ 584]    09F9: 8B C2                                 MOV AX, DX
+[ 585]    09FB: BA 00 00                              MOV DX, 0
+[ 586]    09FE: F7 F3                                 DIV BX
+[ 587]    0A00: 89 16 99 04                           MOV n2_dec_baja, DX
+[ 588]        :                                       
+[ 589]    0A04: 8B 1E 95 04                           MOV BX, n2_ent_baJa
+[ 590]        :                                       
+[ 591]    0A08: 03 D8                                 ADD BX, AX
+[ 592]    0A0A: 03 1E 95 04                           ADD BX, n2_ent_baJa
+[ 593]    0A0E: 89 1E 95 04                           MOV n2_ent_baJa, BX
+[ 594]        :                                       
+[ 595]        :                                       ;Segunda suma
+[ 596]    0A12: 8B 16 91 04                           MOV DX, n1_dec_baja
+[ 597]    0A16: 03 16 91 04                           ADD DX, n1_dec_baja
+[ 598]    0A1A: BB 64 00                              MOV BX, 100
+[ 599]    0A1D: 8B C2                                 MOV AX, DX
+[ 600]    0A1F: BA 00 00                              MOV DX, 0
+[ 601]    0A22: F7 F3                                 DIV BX
+[ 602]    0A24: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 603]    0A28: 8B 1E 8D 04                           MOV BX, n1_ent_baJa
+[ 604]    0A2C: 03 D8                                 ADD BX, AX
+[ 605]    0A2E: 03 1E 8D 04                           ADD BX, n1_ent_baJa
+[ 606]    0A32: 89 1E 8D 04                           MOV n1_ent_baJa, BX
+[ 607]        :                                       ;Tercera Suma
+[ 608]    0A36: 8B 16 91 04                           MOV DX, n1_dec_baja
+[ 609]    0A3A: 03 16 99 04                           ADD DX, n2_dec_baja
+[ 610]    0A3E: BB 64 00                              MOV BX, 100
+[ 611]    0A41: 8B C2                                 MOV AX, DX
+[ 612]    0A43: BA 00 00                              MOV DX, 0
+[ 613]    0A46: F7 F3                                 DIV BX
+[ 614]    0A48: 89 16 C1 04                           MOV perimetro_dec_baja, DX
+[ 615]    0A4C: 8B 1E 8D 04                           MOV BX, n1_ent_baJa
+[ 616]    0A50: 03 D8                                 ADD BX, AX
+[ 617]    0A52: 03 1E 95 04                           ADD BX, n2_ent_baJa
+[ 618]    0A56: 89 1E BD 04                           MOV perimetro_ent_baja, BX
+[ 619]        :                                       
+[ 620]    0A5A: E8 B5 06                              CALL PRINT_RESULT
+[ 621]        :                                       
+[ 622]    0A5D: E9 54 07                              JMP MENU_CONTINUAR
+[ 623]        :                                       
+[ 624]        :                                       
+[ 625]    0A60:                                       TRIANGULO:
+[ 626]    0A60: BA 1D 00                              lea dx, newline
+[ 627]    0A63: CD 21                                 int 21h
+[ 628]    0A65: BA E0 02                              lea dx, lado
+[ 629]    0A68: CD 21                                 int 21h
+[ 630]        :                                       
+[ 631]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[ 632]    0A6A: E8 1D 07                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[ 633]        :                                       
+[ 634]    0A6D: A1 85 04                              MOV AX, n_buffer_ent_baja
+[ 635]    0A70: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[ 636]        :                                       
+[ 637]    0A74: A3 C5 04                              MOV lado1_ent_baja, AX
+[ 638]    0A77: 89 16 C9 04                           MOV lado1_dec_baja, DX
+[ 639]        :                                       
+[ 640]    0A7B: A3 8D 04                              MOV n1_ent_baja, AX
+[ 641]    0A7E: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 642]        :                                       
+[ 643]        :                                       ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
+[ 644]    0A82: C7 06 95 04 03 00                     MOV n2_ent_baja, 3
+[ 645]    0A88: C7 06 99 04 00 00                     MOV n2_dec_baja, 0
+[ 646]        :                                       
+[ 647]    0A8E: E8 74 05                              CALL MULTIPLICACION
+[ 648]    0A91: E8 14 07                              CALL CARGA_DE_VALORES_DE_PERIMETRO
+[ 649]        :                                       
+[ 650]        :                                       ;Se hace la multiplicacion
+[ 651]        :                                       
+[ 652]    0A94: A1 C5 04                              MOV AX, lado1_ent_baja
+[ 653]    0A97: 8B 16 C9 04                           MOV DX, lado1_dec_baja
+[ 654]        :                                       
+[ 655]    0A9B: A3 8D 04                              MOV n1_ent_baja, AX
+[ 656]    0A9E: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 657]        :                                       
+[ 658]    0AA2: C7 06 95 04 00 00                     MOV n2_ent_baja, 0
+[ 659]    0AA8: C7 06 99 04 57 00                     MOV n2_dec_baja, 87
+[ 660]        :                                       
+[ 661]    0AAE: E8 54 05                              CALL MULTIPLICACION
+[ 662]    0AB1: 89 16 F3 04                           MOV altura_ent_alta, DX
+[ 663]    0AB5: A3 F5 04                              MOV altura_ent_baja, AX
+[ 664]    0AB8: 89 0E F9 04                           MOV altura_dec_baja, CX
+[ 665]        :                                       
+[ 666]        :                                       
+[ 667]    0ABC: A1 F5 04                              MOV AX, altura_ent_baja
+[ 668]    0ABF: 8B 16 F9 04                           MOV DX, altura_dec_baja
+[ 669]    0AC3: A3 8D 04                              MOV n1_ent_baja, AX
+[ 670]    0AC6: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 671]        :                                       
+[ 672]    0ACA: C7 06 95 04 00 00                     MOV n2_ent_baja, 0
+[ 673]    0AD0: C7 06 99 04 32 00                     MOV n2_dec_baja, 50
+[ 674]        :                                       
+[ 675]    0AD6: E8 2C 05                              CALL MULTIPLICACION
+[ 676]    0AD9: 89 16 8B 04                           MOV n1_ent_alta, DX
+[ 677]    0ADD: A3 8D 04                              MOV n1_ent_baja, AX
+[ 678]    0AE0: 89 0E 91 04                           MOV n1_dec_baja, CX
+[ 679]        :                                       
+[ 680]        :                                       
+[ 681]    0AE4: A3 95 04                              MOV n2_ent_baja, AX
+[ 682]    0AE7: 89 0E 99 04                           MOV n2_dec_baja, CX
+[ 683]        :                                       
+[ 684]        :                                       
+[ 685]    0AEB: A1 C5 04                              MOV AX, lado1_ent_baja
+[ 686]    0AEE: 8B 16 C9 04                           MOV DX, lado1_dec_baja
+[ 687]        :                                       
+[ 688]    0AF2: A3 8D 04                              MOV n1_ent_baja, AX
+[ 689]    0AF5: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 690]        :                                       
+[ 691]        :                                       ;Se hace la multiplicacion
+[ 692]    0AF9: E8 09 05                              CALL MULTIPLICACION
+[ 693]        :                                       
+[ 694]    0AFC: E8 9D 06                              CALL CARGA_DE_VALORES_DEL_AREA
+[ 695]    0AFF: E8 10 06                              CALL PRINT_RESULT
+[ 696]    0B02: E9 AF 06                              JMP MENU_CONTINUAR
+[ 697]        :                                       
+[ 698]        :                                       
+[ 699]    0B05:                                       ROMBO:
+[ 700]    0B05: BA 1D 00                              lea dx, newline
+[ 701]    0B08: CD 21                                 int 21h
+[ 702]    0B0A: BA E0 02                              lea dx, lado
+[ 703]    0B0D: CD 21                                 int 21h
+[ 704]        :                                       
+[ 705]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[ 706]    0B0F: E8 78 06                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[ 707]        :                                       
+[ 708]    0B12: A1 85 04                              MOV AX, n_buffer_ent_baja
+[ 709]    0B15: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[ 710]        :                                       
+[ 711]    0B19: A3 C5 04                              MOV lado1_ent_baja, AX
+[ 712]    0B1C: 89 16 C9 04                           MOV lado1_dec_baja, DX
+[ 713]        :                                       
+[ 714]        :                                       ;reinicia el buffer------------------------------------
+[ 715]    0B20: B4 09                                 mov ah, 09h
+[ 716]    0B22: BA 41 03                              lea dx, Diago1
+[ 717]    0B25: CD 21                                 int 21h
+[ 718]        :                                       
+[ 719]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[ 720]    0B27: E8 60 06                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[ 721]        :                                       
+[ 722]    0B2A: A1 85 04                              MOV AX, n_buffer_ent_baja
+[ 723]    0B2D: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[ 724]        :                                       
+[ 725]    0B31: A3 E5 04                              MOV diago1_ent_baja, AX
+[ 726]    0B34: 89 16 E9 04                           MOV diago1_dec_baja, DX
+[ 727]        :                                       
+[ 728]        :                                       ;reinicia el buffer------------------------------------
+[ 729]    0B38: B4 09                                 mov ah, 09h
+[ 730]    0B3A: BA 66 03                              lea dx, Diago2
+[ 731]    0B3D: CD 21                                 int 21h
+[ 732]        :                                       
+[ 733]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[ 734]    0B3F: E8 48 06                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[ 735]        :                                       
+[ 736]    0B42: A1 85 04                              MOV AX, n_buffer_ent_baja
+[ 737]    0B45: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[ 738]        :                                       
+[ 739]    0B49: A3 ED 04                              MOV diago2_ent_baja, AX
+[ 740]    0B4C: 89 16 F1 04                           MOV diago2_dec_baja, DX
+[ 741]        :                                       
+[ 742]        :                                       ; Se vuelve al numero del buffer
+[ 743]    0B50: A1 C5 04                              MOV AX, lado1_ent_baja
+[ 744]    0B53: 8B 16 C9 04                           MOV DX, lado1_dec_baja
+[ 745]        :                                       
+[ 746]        :                                       ;Se mueven a n1 y n2 para realizar la multiplicacion (Perimetro = L*4)
+[ 747]        :                                       
+[ 748]    0B57: A3 8D 04                              MOV n1_ent_baja, AX
+[ 749]    0B5A: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 750]        :                                       
+[ 751]    0B5E: C7 06 95 04 04 00                     MOV n2_ent_baJa, 4
+[ 752]    0B64: C7 06 99 04 00 00                     MOV n2_dec_baja, 0
+[ 753]        :                                       
+[ 754]        :                                       ;Se hace la multiplicacion
+[ 755]    0B6A: E8 98 04                              CALL MULTIPLICACION
+[ 756]    0B6D: E8 38 06                              CALL CARGA_DE_VALORES_DE_PERIMETRO
+[ 757]        :                                       
+[ 758]    0B70: A1 E5 04                              MOV AX, diago1_ent_baja
+[ 759]    0B73: 8B 16 E9 04                           MOV DX, diago1_dec_baja
+[ 760]        :                                       
+[ 761]        :                                       ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
+[ 762]    0B77: A3 8D 04                              MOV n1_ent_baja, AX
+[ 763]    0B7A: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 764]        :                                       
+[ 765]    0B7E: C7 06 95 04 00 00                     MOV n2_ent_baja, 0
+[ 766]    0B84: C7 06 99 04 32 00                     MOV n2_dec_baja, 50
+[ 767]        :                                       
+[ 768]        :                                       ;Se hace la multiplicacion
+[ 769]    0B8A: E8 78 04                              CALL MULTIPLICACION
+[ 770]    0B8D: 89 16 8B 04                           MOV n1_ent_alta, DX
+[ 771]    0B91: A3 8D 04                              MOV n1_ent_baja, AX
+[ 772]    0B94: 89 0E 91 04                           MOV n1_dec_baja, CX
+[ 773]        :                                       
+[ 774]    0B98: A1 ED 04                              MOV AX, diago2_ent_baja
+[ 775]    0B9B: 8B 16 F1 04                           MOV DX, diago2_dec_baja
+[ 776]        :                                       
+[ 777]    0B9F: A3 95 04                              MOV n2_ent_baja, AX
+[ 778]    0BA2: 89 16 99 04                           MOV n2_dec_baja, DX
+[ 779]        :                                       
+[ 780]    0BA6: E8 5C 04                              CALL MULTIPLICACION
+[ 781]    0BA9: E8 F0 05                              CALL CARGA_DE_VALORES_DEL_AREA
+[ 782]        :                                       
+[ 783]    0BAC: E8 63 05                              CALL PRINT_RESULT
+[ 784]        :                                       
+[ 785]    0BAF: E9 02 06                              JMP MENU_CONTINUAR
+[ 786]        :                                       
+[ 787]        :                                       
+[ 788]        :                                       
+[ 789]    0BB2:                                       PENTAGONO:
+[ 790]    0BB2: BA 1D 00                              lea dx, newline
+[ 791]    0BB5: CD 21                                 int 21h
+[ 792]    0BB7: BA E0 02                              lea dx, lado
+[ 793]    0BBA: CD 21                                 int 21h
+[ 794]        :                                       
+[ 795]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[ 796]    0BBC: E8 CB 05                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[ 797]        :                                       
+[ 798]    0BBF: A1 85 04                              MOV AX, n_buffer_ent_baja
+[ 799]    0BC2: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[ 800]        :                                       
+[ 801]    0BC6: A3 C5 04                              MOV lado1_ent_baja, AX
+[ 802]    0BC9: 89 16 C9 04                           MOV lado1_dec_baja, DX
+[ 803]        :                                       
+[ 804]    0BCD: A3 8D 04                              MOV n1_ent_baja, AX
+[ 805]    0BD0: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 806]        :                                       
+[ 807]        :                                       ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
+[ 808]    0BD4: C7 06 95 04 05 00                     MOV n2_ent_baja, 5
+[ 809]    0BDA: C7 06 99 04 00 00                     MOV n2_dec_baja, 0
+[ 810]        :                                       
+[ 811]        :                                       ;Se hace la multiplicacion
+[ 812]    0BE0: E8 22 04                              CALL MULTIPLICACION
+[ 813]    0BE3: E8 C2 05                              CALL CARGA_DE_VALORES_DE_PERIMETRO
+[ 814]        :                                       
+[ 815]    0BE6: A1 C5 04                              MOV AX, lado1_ent_baja
+[ 816]    0BE9: 8B 16 C9 04                           MOV DX, lado1_dec_baja
+[ 817]        :                                       
+[ 818]    0BED: A3 8D 04                              MOV n1_ent_baja, AX
+[ 819]    0BF0: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 820]        :                                       
+[ 821]    0BF4: C7 06 95 04 01 00                     MOV n2_ent_baja, 1
+[ 822]    0BFA: C7 06 99 04 2D 00                     MOV n2_dec_baja, 45
+[ 823]        :                                       
+[ 824]        :                                       ;Se hace la multiplicacion
+[ 825]    0C00: E8 02 04                              CALL MULTIPLICACION
+[ 826]        :                                       
+[ 827]    0C03: 89 16 FB 04                           MOV apotema_ent_alta, DX
+[ 828]    0C07: A3 FD 04                              MOV apotema_ent_baja, AX
+[ 829]    0C0A: 89 0E 01 05                           MOV apotema_dec_baja, CX
+[ 830]        :                                       
+[ 831]        :                                       
+[ 832]    0C0E: A1 FD 04                              MOV AX, apotema_ent_baja
+[ 833]    0C11: 8B 16 01 05                           MOV DX, apotema_dec_baja
+[ 834]    0C15: A3 8D 04                              MOV n1_ent_baja, AX
+[ 835]    0C18: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 836]        :                                       
+[ 837]        :                                       
+[ 838]    0C1C: C7 06 95 04 00 00                     MOV n2_ent_baja, 0
+[ 839]    0C22: C7 06 99 04 32 00                     MOV n2_dec_baja, 50
+[ 840]        :                                       
+[ 841]        :                                       ;Se hace la multiplicacion
+[ 842]    0C28: E8 DA 03                              CALL MULTIPLICACION
+[ 843]        :                                       
+[ 844]    0C2B: A3 8D 04                              MOV n1_ent_baja, AX
+[ 845]    0C2E: 89 0E 91 04                           MOV n1_dec_baja, CX
+[ 846]        :                                       
+[ 847]    0C32: A1 BD 04                              MOV AX, perimetro_ent_baja
+[ 848]    0C35: 8B 16 C1 04                           MOV DX, perimetro_dec_baja
+[ 849]        :                                       
+[ 850]    0C39: A3 95 04                              MOV n2_ent_baja, AX
+[ 851]    0C3C: 89 16 99 04                           MOV n2_dec_baja, DX
+[ 852]        :                                       
+[ 853]        :                                       
+[ 854]        :                                       ;Se hace la multiplicacion
+[ 855]    0C40: E8 C2 03                              CALL MULTIPLICACION
+[ 856]        :                                       
+[ 857]    0C43: E8 56 05                              CALL CARGA_DE_VALORES_DEL_AREA
+[ 858]    0C46: E8 C9 04                              CALL PRINT_RESULT
+[ 859]    0C49: E9 68 05                              JMP MENU_CONTINUAR
+[ 860]        :                                       
+[ 861]        :                                       
+[ 862]    0C4C:                                       HEXAGONO:
+[ 863]    0C4C: BA 1D 00                              lea dx, newline
+[ 864]    0C4F: CD 21                                 int 21h
+[ 865]    0C51: BA E0 02                              lea dx, lado
+[ 866]    0C54: CD 21                                 int 21h
+[ 867]        :                                       
+[ 868]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[ 869]    0C56: E8 31 05                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[ 870]        :                                       
+[ 871]    0C59: A1 85 04                              MOV AX, n_buffer_ent_baja
+[ 872]    0C5C: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[ 873]        :                                       
+[ 874]    0C60: A3 C5 04                              MOV lado1_ent_baja, AX
+[ 875]    0C63: 89 16 C9 04                           MOV lado1_dec_baja, DX
+[ 876]        :                                       
+[ 877]    0C67: A3 8D 04                              MOV n1_ent_baja, AX
+[ 878]    0C6A: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 879]        :                                       
+[ 880]        :                                       ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = L^2) por eso se almacenan el mismo
+[ 881]    0C6E: C7 06 95 04 06 00                     MOV n2_ent_baja, 6
+[ 882]    0C74: C7 06 99 04 00 00                     MOV n2_dec_baja, 0
+[ 883]        :                                       
+[ 884]    0C7A: E8 88 03                              CALL MULTIPLICACION
+[ 885]    0C7D: E8 28 05                              CALL CARGA_DE_VALORES_DE_PERIMETRO
+[ 886]        :                                       
+[ 887]        :                                       ;Se hace la multiplicacion
+[ 888]        :                                       
+[ 889]    0C80: A1 C5 04                              MOV AX, lado1_ent_baja
+[ 890]    0C83: 8B 16 C9 04                           MOV DX, lado1_dec_baja
+[ 891]        :                                       
+[ 892]    0C87: A3 8D 04                              MOV n1_ent_baja, AX
+[ 893]    0C8A: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 894]        :                                       
+[ 895]    0C8E: C7 06 95 04 00 00                     MOV n2_ent_baja, 0
+[ 896]    0C94: C7 06 99 04 57 00                     MOV n2_dec_baja, 87
+[ 897]        :                                       
+[ 898]    0C9A: E8 68 03                              CALL MULTIPLICACION
+[ 899]        :                                       
+[ 900]    0C9D: 89 16 FB 04                           MOV apotema_ent_alta, DX
+[ 901]    0CA1: A3 FD 04                              MOV apotema_ent_baja, AX
+[ 902]    0CA4: 89 0E 01 05                           MOV apotema_dec_baja, CX
+[ 903]        :                                       
+[ 904]    0CA8: A1 FD 04                              MOV AX, apotema_ent_baja
+[ 905]    0CAB: 8B 16 01 05                           MOV DX, apotema_dec_baja
+[ 906]    0CAF: A3 8D 04                              MOV n1_ent_baja, AX
+[ 907]    0CB2: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 908]        :                                       
+[ 909]    0CB6: C7 06 95 04 00 00                     MOV n2_ent_baja, 0
+[ 910]    0CBC: C7 06 99 04 32 00                     MOV n2_dec_baja, 50
+[ 911]        :                                       
+[ 912]    0CC2: E8 40 03                              CALL MULTIPLICACION
+[ 913]    0CC5: 89 16 8B 04                           MOV n1_ent_alta, DX
+[ 914]    0CC9: A3 8D 04                              MOV n1_ent_baja, AX
+[ 915]    0CCC: 89 0E 91 04                           MOV n1_dec_baja, CX
+[ 916]        :                                       
+[ 917]    0CD0: A3 95 04                              MOV n2_ent_baja, AX
+[ 918]    0CD3: 89 0E 99 04                           MOV n2_dec_baja, CX
+[ 919]        :                                       
+[ 920]    0CD7: A1 BD 04                              MOV AX, perimetro_ent_baja
+[ 921]    0CDA: 8B 16 C1 04                           MOV DX, perimetro_dec_baja
+[ 922]        :                                       
+[ 923]    0CDE: A3 8D 04                              MOV n1_ent_baja, AX
+[ 924]    0CE1: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 925]        :                                       
+[ 926]        :                                       ;Se hace la multiplicacion
+[ 927]    0CE5: E8 1D 03                              CALL MULTIPLICACION
+[ 928]        :                                       
+[ 929]    0CE8: E8 B1 04                              CALL CARGA_DE_VALORES_DEL_AREA
+[ 930]    0CEB: E8 24 04                              CALL PRINT_RESULT
+[ 931]    0CEE: E9 C3 04                              JMP MENU_CONTINUAR
+[ 932]        :                                       
+[ 933]        :                                       
+[ 934]    0CF1:                                       CIRCULO:
+[ 935]    0CF1: BA 1D 00                              lea dx, newline
+[ 936]    0CF4: CD 21                                 int 21h
+[ 937]    0CF6: BA AC 03                              lea dx, radio
+[ 938]    0CF9: CD 21                                 int 21h
+[ 939]        :                                       
+[ 940]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[ 941]    0CFB: E8 8C 04                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[ 942]        :                                       
+[ 943]    0CFE: A1 85 04                              MOV AX, n_buffer_ent_baja
+[ 944]    0D01: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[ 945]        :                                       
+[ 946]        :                                       ;Se mueven a n1 y n2 para realizar la multiplicacion (Perimetro = 2pi*r)
+[ 947]    0D05: A3 8D 04                              MOV n1_ent_baja, AX
+[ 948]    0D08: C7 06 95 04 06 00                     MOV n2_ent_baJa, 6   ;Entero de pi por 2
+[ 949]        :                                       
+[ 950]    0D0E: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 951]    0D12: C7 06 99 04 1C 00                     MOV n2_dec_baja, 28  ;Decimal de pi por 2
+[ 952]        :                                       
+[ 953]        :                                       ;Se hace la multiplicacion
+[ 954]    0D18: E8 EA 02                              CALL MULTIPLICACION
+[ 955]    0D1B: E8 8A 04                              CALL CARGA_DE_VALORES_DE_PERIMETRO
+[ 956]        :                                       
+[ 957]        :                                       ; Se vuelve al numero del buffer
+[ 958]    0D1E: A1 85 04                              MOV AX, n_buffer_ent_baja
+[ 959]    0D21: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[ 960]        :                                       
+[ 961]        :                                       ;Se mueven a n1 y n2 para realizar la multiplicacion (Area = pi*r^2)
+[ 962]        :                                       ;En esta parte se realiza r^2
+[ 963]    0D25: A3 C5 04                              MOV lado1_ent_baja, AX
+[ 964]    0D28: 89 16 C9 04                           MOV lado1_dec_baja, DX
+[ 965]        :                                       
+[ 966]    0D2C: A3 8D 04                              MOV n1_ent_baja, AX
+[ 967]    0D2F: 89 16 91 04                           MOV n1_dec_baja, DX
+[ 968]        :                                       
+[ 969]    0D33: C7 06 95 04 00 00                     MOV n2_ent_baja, 0
+[ 970]    0D39: C7 06 99 04 02 00                     MOV n2_dec_baja, 02
+[ 971]        :                                       
+[ 972]        :                                       ;Se hace la multiplicacion
+[ 973]    0D3F: E8 C3 02                              CALL MULTIPLICACION
+[ 974]        :                                       
+[ 975]    0D42: 89 16 8B 04                           MOV n1_ent_alta, DX
+[ 976]    0D46: A3 8D 04                              MOV n1_ent_baja, AX
+[ 977]    0D49: 89 0E 91 04                           MOV n1_dec_baja, CX
+[ 978]        :                                       
+[ 979]    0D4D: C7 06 95 04 9D 00                     MOV n2_ent_baja, 157
+[ 980]    0D53: C7 06 99 04 00 00                     MOV n2_dec_baja, 0
+[ 981]        :                                       
+[ 982]        :                                       ;Se hace la multiplicacion
+[ 983]    0D59: E8 A9 02                              CALL MULTIPLICACION
+[ 984]        :                                       
+[ 985]    0D5C: 89 16 8B 04                           MOV n1_ent_alta, DX
+[ 986]    0D60: A3 8D 04                              MOV n1_ent_baja, AX
+[ 987]    0D63: 89 0E 91 04                           MOV n1_dec_baja, CX
+[ 988]        :                                       
+[ 989]    0D67: A1 C5 04                              MOV AX, lado1_ent_baja
+[ 990]    0D6A: 8B 16 C9 04                           MOV DX, lado1_dec_baja
+[ 991]        :                                       
+[ 992]    0D6E: A3 95 04                              MOV n2_ent_baja, AX
+[ 993]    0D71: 89 16 99 04                           MOV n2_dec_baja, DX
+[ 994]        :                                       
+[ 995]        :                                       ;Se hace la multiplicacion
+[ 996]    0D75: E8 8D 02                              CALL MULTIPLICACION
+[ 997]        :                                       
+[ 998]    0D78: E8 21 04                              CALL CARGA_DE_VALORES_DEL_AREA
+[ 999]    0D7B: E8 94 03                              CALL PRINT_RESULT
+[1000]    0D7E: E9 33 04                              JMP MENU_CONTINUAR
+[1001]        :                                       
+[1002]    0D81:                                       TRAPECIO:
+[1003]    0D81: BA 1D 00                              lea dx, newline
+[1004]    0D84: CD 21                                 int 21h
+[1005]    0D86: BA F4 03                              lea dx, base_menor
+[1006]    0D89: CD 21                                 int 21h
+[1007]        :                                       
+[1008]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[1009]    0D8B: E8 FC 03                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[1010]        :                                       
+[1011]        :                                       ; Guarda los valores obtenidos en el buffer
+[1012]    0D8E: A1 85 04                              MOV AX, n_buffer_ent_baja
+[1013]    0D91: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[1014]    0D95: A3 DD 04                              MOV base_menor_ent_baja, AX
+[1015]    0D98: 89 16 E1 04                           MOV base_menor_dec_baja, DX
+[1016]        :                                       
+[1017]        :                                       ;Ingreso de la base mayor
+[1018]    0D9C: B4 09                                 mov ah, 09h
+[1019]    0D9E: BA 1B 04                              lea dx, base_mayor
+[1020]    0DA1: CD 21                                 int 21h
+[1021]        :                                       
+[1022]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[1023]    0DA3: E8 E4 03                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[1024]        :                                       
+[1025]        :                                       ; Guarda los valores obtenidos en el buffer
+[1026]    0DA6: A1 85 04                              MOV AX, n_buffer_ent_baja
+[1027]    0DA9: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[1028]    0DAD: A3 D5 04                              MOV base_mayor_ent_baja, AX
+[1029]    0DB0: 89 16 D9 04                           MOV base_mayor_dec_baja, DX
+[1030]        :                                       
+[1031]    0DB4: B4 09                                 mov ah, 09h
+[1032]    0DB6: BA 8B 03                              lea dx, altura
+[1033]    0DB9: CD 21                                 int 21h
+[1034]        :                                       
+[1035]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[1036]    0DBB: E8 CC 03                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[1037]        :                                       
+[1038]        :                                       ; Guarda los valores obtenidos en el buffer
+[1039]    0DBE: A1 85 04                              MOV AX, n_buffer_ent_baja
+[1040]    0DC1: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[1041]    0DC5: A3 F5 04                              MOV altura_ent_baja, AX
+[1042]    0DC8: 89 16 F9 04                           MOV altura_dec_baja, DX
+[1043]        :                                       
+[1044]        :                                       ;Ingreso del lado 1
+[1045]    0DCC: B4 09                                 mov ah, 09h
+[1046]    0DCE: BA FF 02                              lea dx, lado1
+[1047]    0DD1: CD 21                                 int 21h
+[1048]        :                                       
+[1049]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[1050]    0DD3: E8 B4 03                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[1051]        :                                       
+[1052]        :                                       ; Guarda los valores obtenidos en el buffer
+[1053]    0DD6: A1 85 04                              MOV AX, n_buffer_ent_baja
+[1054]    0DD9: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[1055]    0DDD: A3 C5 04                              MOV lado1_ent_baja, AX
+[1056]    0DE0: 89 16 C9 04                           MOV lado1_dec_baja, DX
+[1057]        :                                       
+[1058]        :                                       ;Ingreso del lado 2
+[1059]    0DE4: B4 09                                 mov ah, 09h
+[1060]    0DE6: BA 20 03                              lea dx, lado2
+[1061]    0DE9: CD 21                                 int 21h
+[1062]        :                                       
+[1063]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[1064]    0DEB: E8 9C 03                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[1065]        :                                       
+[1066]        :                                       ; Guarda los valores obtenidos en el buffer
+[1067]    0DEE: A1 85 04                              MOV AX, n_buffer_ent_baja
+[1068]    0DF1: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[1069]    0DF5: A3 CD 04                              MOV lado2_ent_baja, AX
+[1070]    0DF8: 89 16 D1 04                           MOV lado2_dec_baja, DX
+[1071]        :                                       
+[1072]        :                                       
+[1073]        :                                       ;Se mueven los valores para poder operarlos
+[1074]        :                                       
+[1075]        :                                       ;Suma de las bases
+[1076]    0DFC: 8B 16 E1 04                           MOV DX, base_menor_dec_baja
+[1077]    0E00: 03 16 D9 04                           ADD DX, base_mayor_dec_baja
+[1078]    0E04: BB 64 00                              MOV BX, 100
+[1079]    0E07: 8B C2                                 MOV AX, DX
+[1080]    0E09: BA 00 00                              MOV DX, 0
+[1081]    0E0C: F7 F3                                 DIV BX
+[1082]    0E0E: 89 16 09 05                           MOV suma_1_dec_baja, DX
+[1083]    0E12: 8B 1E DD 04                           MOV BX, base_menor_ent_baja
+[1084]    0E16: 03 D8                                 ADD BX, AX
+[1085]    0E18: 03 1E D5 04                           ADD BX, base_mayor_ent_baja
+[1086]    0E1C: 89 1E 05 05                           MOV suma_1_ent_baja, BX
+[1087]        :                                       
+[1088]        :                                       ;Suma de las bases + lado1
+[1089]    0E20: 8B 16 09 05                           MOV DX, suma_1_dec_baja
+[1090]    0E24: 03 16 C9 04                           ADD DX, lado1_dec_baja
+[1091]    0E28: BB 64 00                              MOV BX, 100
+[1092]    0E2B: 8B C2                                 MOV AX, DX
+[1093]    0E2D: BA 00 00                              MOV DX, 0
+[1094]    0E30: F7 F3                                 DIV BX
+[1095]    0E32: 89 16 11 05                           MOV suma_2_dec_baja, DX
+[1096]    0E36: 8B 1E 05 05                           MOV BX, suma_1_ent_baja
+[1097]    0E3A: 03 D8                                 ADD BX, AX
+[1098]    0E3C: 03 1E C5 04                           ADD BX, lado1_ent_baja
+[1099]    0E40: 89 1E 0D 05                           MOV suma_2_ent_baja, BX
+[1100]        :                                       
+[1101]        :                                       ;Suma de las bases + lado2
+[1102]    0E44: 8B 16 11 05                           MOV DX, suma_2_dec_baja
+[1103]    0E48: 03 16 D1 04                           ADD DX, lado2_dec_baja
+[1104]    0E4C: BB 64 00                              MOV BX, 100
+[1105]    0E4F: 8B C2                                 MOV AX, DX
+[1106]    0E51: BA 00 00                              MOV DX, 0
+[1107]    0E54: F7 F3                                 DIV BX
+[1108]    0E56: 89 16 C1 04                           MOV perimetro_dec_baja, DX
+[1109]    0E5A: 8B 1E 0D 05                           MOV BX, suma_2_ent_baja
+[1110]    0E5E: 03 D8                                 ADD BX, AX
+[1111]    0E60: 03 1E CD 04                           ADD BX, lado2_ent_baja
+[1112]    0E64: 89 1E BD 04                           MOV perimetro_ent_baja, BX
+[1113]        :                                       
+[1114]        :                                       
+[1115]        :                                       ;Se mueven a n1 y n2 para realizar la multiplicacion
+[1116]    0E68: A1 05 05                              MOV AX, suma_1_ent_baja
+[1117]    0E6B: BA 00 00                              MOV DX, 0
+[1118]        :                                       
+[1119]    0E6E: A3 8D 04                              MOV n1_ent_baja, AX
+[1120]    0E71: 89 16 95 04                           MOV n2_ent_baJa, DX
+[1121]        :                                       
+[1122]    0E75: A1 09 05                              MOV AX, suma_1_dec_baja
+[1123]    0E78: BA 32 00                              MOV DX, 50
+[1124]        :                                       
+[1125]    0E7B: A3 91 04                              MOV n1_dec_baja, AX
+[1126]    0E7E: 89 16 99 04                           MOV n2_dec_baJa, DX
+[1127]        :                                       
+[1128]        :                                       ;Se hace la multiplicacion
+[1129]    0E82: E8 80 01                              CALL MULTIPLICACION
+[1130]        :                                       
+[1131]    0E85: 89 16 8B 04                           MOV n1_ent_alta, DX
+[1132]    0E89: A3 8D 04                              MOV n1_ent_baja, AX
+[1133]    0E8C: 89 0E 91 04                           MOV n1_dec_baja, CX
+[1134]        :                                       
+[1135]    0E90: A1 F5 04                              MOV AX, altura_ent_baja
+[1136]    0E93: 8B 16 F9 04                           MOV DX, altura_dec_baja
+[1137]        :                                       
+[1138]    0E97: A3 95 04                              MOV n2_ent_baja, AX
+[1139]    0E9A: 89 16 99 04                           MOV n2_dec_baja, DX
+[1140]        :                                       
+[1141]        :                                       ;Se hace la multiplicacion
+[1142]    0E9E: E8 64 01                              CALL MULTIPLICACION
+[1143]        :                                       
+[1144]    0EA1: E8 F8 02                              CALL CARGA_DE_VALORES_DEL_AREA
+[1145]    0EA4: E8 6B 02                              CALL PRINT_RESULT
+[1146]    0EA7: E9 0A 03                              JMP MENU_CONTINUAR
+[1147]        :                                       
+[1148]        :                                       
+[1149]        :                                       
+[1150]    0EAA:                                       PARALELOGRAMO:
+[1151]    0EAA: BA 1D 00                              lea dx, newline
+[1152]    0EAD: CD 21                                 int 21h
+[1153]    0EAF: BA CC 03                              lea dx, base
+[1154]    0EB2: CD 21                                 int 21h
+[1155]        :                                       
+[1156]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[1157]    0EB4: E8 D3 02                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[1158]        :                                       
+[1159]        :                                       ; Guarda los valores obtenidos en el buffer
+[1160]    0EB7: A1 85 04                              MOV AX, n_buffer_ent_baja
+[1161]    0EBA: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[1162]    0EBE: A3 C5 04                              MOV lado1_ent_baja, AX
+[1163]    0EC1: 89 16 C9 04                           MOV lado1_dec_baja, DX
+[1164]        :                                       
+[1165]        :                                       ;Ingreso del lado 2
+[1166]    0EC5: B4 09                                 mov ah, 09h
+[1167]    0EC7: BA 20 03                              lea dx, lado2
+[1168]    0ECA: CD 21                                 int 21h
+[1169]        :                                       
+[1170]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[1171]    0ECC: E8 BB 02                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[1172]        :                                       
+[1173]        :                                       ; Guarda los valores obtenidos en el buffer
+[1174]    0ECF: A1 85 04                              MOV AX, n_buffer_ent_baja
+[1175]    0ED2: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[1176]    0ED6: A3 CD 04                              MOV lado2_ent_baja, AX
+[1177]    0ED9: 89 16 D1 04                           MOV lado2_dec_baja, DX
+[1178]        :                                       
+[1179]        :                                       ;Ingreso de la altura
+[1180]    0EDD: B4 09                                 mov ah, 09h
+[1181]    0EDF: BA 8B 03                              lea dx, altura
+[1182]    0EE2: CD 21                                 int 21h
+[1183]        :                                       
+[1184]        :                                       ;Inicia, lee y convierte lo almacenado en el buffer a entero
+[1185]    0EE4: E8 A3 02                              CALL LEER_CARACTERES_EN_EL_BUFFER
+[1186]        :                                       
+[1187]        :                                       ; Guarda los valores obtenidos en el buffer
+[1188]    0EE7: A1 85 04                              MOV AX, n_buffer_ent_baja
+[1189]    0EEA: 8B 16 89 04                           MOV DX, n_buffer_dec_baja
+[1190]        :                                       
+[1191]    0EEE: A3 F5 04                              MOV altura_ent_baja, AX
+[1192]    0EF1: 89 16 F9 04                           MOV altura_dec_baja, DX
+[1193]        :                                       
+[1194]        :                                       ;Se mueven los valores para poder operarlos
+[1195]        :                                       
+[1196]        :                                       
+[1197]        :                                       ;Se mueven a n1 y n2 para realizar la multiplicacion (Perimetro = 2pi*r)
+[1198]    0EF5: A1 C5 04                              MOV AX, lado1_ent_baja
+[1199]    0EF8: 8B 16 F5 04                           MOV DX, altura_ent_baja
+[1200]        :                                       
+[1201]    0EFC: A3 8D 04                              MOV n1_ent_baja, AX
+[1202]    0EFF: 89 16 95 04                           MOV n2_ent_baJa, DX
+[1203]        :                                       
+[1204]    0F03: A1 C9 04                              MOV AX, lado1_dec_baja
+[1205]    0F06: 8B 16 F9 04                           MOV DX, altura_dec_baja
+[1206]        :                                       
+[1207]    0F0A: A3 91 04                              MOV n1_dec_baja, AX
+[1208]    0F0D: 89 16 99 04                           MOV n2_dec_baJa, DX
+[1209]        :                                       
+[1210]    0F11: E8 F1 00                              CALL MULTIPLICACION
+[1211]    0F14: E8 85 02                              CALL CARGA_DE_VALORES_DEL_AREA
+[1212]        :                                       
+[1213]    0F17: A1 C5 04                              MOV AX, lado1_ent_baja
+[1214]    0F1A: 8B 16 CD 04                           MOV DX, lado2_ent_baja
+[1215]        :                                       
+[1216]        :                                       
+[1217]        :                                       ;Carga el lado 1
+[1218]    0F1E: A1 C5 04                              MOV AX, lado1_ent_baja
+[1219]    0F21: 8B 16 C9 04                           MOV DX, lado1_dec_baja
+[1220]    0F25: A3 8D 04                              MOV n1_ent_baja, AX
+[1221]    0F28: 89 16 91 04                           MOV n1_dec_baja, DX
+[1222]        :                                       
+[1223]        :                                       ;Carga el lado 2
+[1224]    0F2C: A1 CD 04                              MOV AX, lado2_ent_baja
+[1225]    0F2F: 8B 16 D1 04                           MOV DX, lado2_dec_baja
+[1226]    0F33: A3 95 04                              MOV n2_ent_baja, AX
+[1227]    0F36: 89 16 99 04                           MOV n2_dec_baja, DX
+[1228]        :                                       
+[1229]        :                                       ;Suma los lados
+[1230]    0F3A: 8B 16 91 04                           MOV DX, n1_dec_baja
+[1231]    0F3E: 03 16 99 04                           ADD DX, n2_dec_baja
+[1232]    0F42: BB 64 00                              MOV BX, 100
+[1233]    0F45: 8B C2                                 MOV AX, DX
+[1234]    0F47: BA 00 00                              MOV DX, 0
+[1235]    0F4A: F7 F3                                 DIV BX
+[1236]    0F4C: 89 16 91 04                           MOV n1_dec_baja, DX
+[1237]    0F50: 8B 1E 8D 04                           MOV BX, n1_ent_baJa
+[1238]    0F54: 03 D8                                 ADD BX, AX
+[1239]    0F56: 03 1E 95 04                           ADD BX, n2_ent_baJa
+[1240]    0F5A: 89 1E 8D 04                           MOV n1_ent_baja, BX
+[1241]        :                                       
+[1242]    0F5E: C7 06 95 04 02 00                     MOV n2_ent_baJa, 2   ;Entero de pi por 2
+[1243]    0F64: C7 06 99 04 00 00                     MOV n2_dec_baja, 00  ;Decimal de pi por 2
+[1244]        :                                       
+[1245]    0F6A: E8 98 00                              CALL MULTIPLICACION
+[1246]    0F6D: E8 38 02                              CALL CARGA_DE_VALORES_DE_PERIMETRO
+[1247]    0F70: E8 9F 01                              CALL PRINT_RESULT
+[1248]    0F73: E9 3E 02                              JMP MENU_CONTINUAR
+[1249]        :                                       
+[1250]        :                                       
+[1251]        :                                       
+[1252]    0F76:                                       READ_LOOP:
+[1253]    0F76: B4 01                                 mov ah, 01h          ; Funciï¿½n de lectura de un carï¿½cter
+[1254]    0F78: CD 21                                 int 21h              ; Leer carï¿½cter del teclado
+[1255]        :                                       
+[1256]    0F7A: 3C 0D                                 CMP AL, 0DH          ; Verificar si el carï¿½cter es Enter (fin de entrada)
+[1257]    0F7C: 74 49                                 JE DONE              ; Si es Enter, terminar lectura
+[1258]        :                                       
+[1259]    0F7E: 3C 08                                 CMP AL, 08H          ; Verificar si el carï¿½cter es Backspace
+[1260]    0F80: 74 1D                                 JE BACKSPACE         ; Si es Backspace, borrar el ï¿½ltimo carï¿½cter
+[1261]        :                                       
+[1262]    0F82: 3C 2E                                 CMP AL, '.'          ; Verificar si el carï¿½cter es un punto decimal
+[1263]    0F84: 74 0C                                 JE DECIMAL_POINT     ; Si es punto decimal, cambiar a modo decimal
+[1264]        :                                       
+[1265]        :                                       ; Convertir carï¿½cter ASCII a nï¿½mero (0-9)
+[1266]    0F86: 2C 30                                 SUB AL, '0'
+[1267]    0F88: 3C 09                                 CMP AL, 9
+[1268]    0F8A: 77 37                                 JA INVALID_CHAR      ; Verificar si el carï¿½cter es un dï¿½gito vï¿½lido
+[1269]        :                                       
+[1270]        :                                       ; Guardar carï¿½cter en buffer
+[1271]    0F8C: 88 05                                 MOV [DI], AL
+[1272]    0F8E: 47                                    INC DI
+[1273]    0F8F: 41                                    INC CX
+[1274]    0F90: EB E4                                 JMP READ_LOOP        ; Continuar leyendo caracteres
+[1275]        :                                       
+[1276]    0F92:                                       DECIMAL_POINT:
+[1277]        :                                       ; Solo se permite un punto decimal
+[1278]    0F92: 80 FB 01                              CMP BL, 1
+[1279]    0F95: 74 2C                                 JE INVALID_CHAR      ; Si ya hay un punto decimal, es invï¿½lido
+[1280]        :                                       
+[1281]    0F97: B3 01                                 MOV BL, 1            ; Indicar que hemos encontrado el punto decimal
+[1282]    0F99: 88 05                                 MOV [DI], AL         ; Guardar el punto decimal en el buffer
+[1283]    0F9B: 47                                    INC DI
+[1284]    0F9C: 41                                    INC CX
+[1285]    0F9D: EB D7                                 JMP READ_LOOP        ; Continuar leyendo caracteres
+[1286]        :                                       
+[1287]    0F9F:                                       BACKSPACE:
+[1288]    0F9F: 83 F9 00                              CMP CX, 0            ; Verificar si hay algo para borrar
+[1289]    0FA2: 74 D2                                 JE READ_LOOP         ; Si no hay nada, continuar
+[1290]        :                                       
+[1291]    0FA4: 4F                                    DEC DI               ; Mover el puntero de vuelta en el buffer
+[1292]    0FA5: 49                                    DEC CX               ; Disminuir el contador de caracteres
+[1293]        :                                       
+[1294]        :                                       ; Mover cursor hacia atrï¿½s y sobrescribir el carï¿½cter con un espacio
+[1295]    0FA6: B4 02                                 MOV AH, 02H          ; Funciï¿½n para mover el cursor
+[1296]    0FA8: B2 08                                 MOV DL, 08H          ; Mover el cursor una posiciï¿½n hacia la izquierda
+[1297]    0FAA: CD 21                                 INT 21H              ; Ejecutar
+[1298]        :                                       
+[1299]    0FAC: B4 09                                 MOV AH, 09H          ; Funciï¿½n para mostrar caracteres
+[1300]    0FAE: BA 82 01                              LEA DX, blank_char   ; Direcciï¿½n del carï¿½cter espacio
+[1301]    0FB1: CD 21                                 INT 21H              ; Mostrar el espacio en blanco
+[1302]        :                                       
+[1303]        :                                       ; Mover el cursor hacia atrï¿½s de nuevo para que quede en la posiciï¿½n correcta
+[1304]    0FB3: B4 02                                 MOV AH, 02H          ; Funciï¿½n para mover el cursor
+[1305]    0FB5: B2 08                                 MOV DL, 08H          ; Mover el cursor una posiciï¿½n hacia la izquierda
+[1306]    0FB7: CD 21                                 INT 21H              ; Ejecutar
+[1307]        :                                       
+[1308]        :                                       ; Verificar si el carï¿½cter a borrar es un punto decimal
+[1309]    0FB9: 8A 05                                 MOV AL, [DI]         ; Cargar el carï¿½cter que se va a borrar
+[1310]    0FBB: 3C 2E                                 CMP AL, '.'
+[1311]    0FBD: 75 B7                                 JNE READ_LOOP        ; Si no es un punto decimal, continuar
+[1312]        :                                       
+[1313]    0FBF: B3 00                                 MOV BL, 0            ; Restablecer el modo a parte entera
+[1314]        :                                       
+[1315]    0FC1: EB B3                                 JMP READ_LOOP        ; Continuar leyendo caracteres
+[1316]        :                                       
+[1317]        :                                       
+[1318]    0FC3:                                       INVALID_CHAR:
+[1319]        :                                       ; Eliminar el ï¿½ltimo carï¿½cter ingresado (simular backspace)
+[1320]    0FC3: EB DA                                 JMP BACKSPACE        ; Llamar a la rutina de retroceso (Backspace)
+[1321]        :                                       ; Continuar leyendo caracteres
+[1322]    0FC5: EB AF                                 JMP READ_LOOP
+[1323]        :                                       
+[1324]    0FC7:                                       DONE:
+[1325]        :                                       ; Agregar terminador null al final del buffer
+[1326]    0FC7: C6 05 24                              MOV BYTE PTR [DI], '$'
+[1327]        :                                       ; Mostrar nueva lï¿½nea
+[1328]    0FCA: B4 09                                 MOV AH, 09H
+[1329]    0FCC: BA 1D 00                              LEA DX, NEWLINE
+[1330]    0FCF: CD 21                                 INT 21H
+[1331]    0FD1: C3                                    ret
+[1332]        :                                       
+[1333]    0FD2:                                       STR_TO_INT:
+[1334]    0FD2: 33 C0                                 xor ax, ax            ; Limpiar AX para usarlo como el nï¿½mero entero
+[1335]    0FD4: B9 0A 00                              mov cx, 10            ; Base 10 para la conversiï¿½n
+[1336]        :                                       
+[1337]    0FD7:                                       convert_loop:
+[1338]    0FD7: 8A 1C                                 mov bl, [si]          ; Cargar el siguiente carï¿½cter
+[1339]    0FD9: 80 FB 24                              cmp bl, '$'           ; Verificar el final de la cadena
+[1340]    0FDC: 74 0F                                 je done_conversion    ; Si es el final, terminar
+[1341]    0FDE: 80 FB 2E                              cmp bl, '.'
+[1342]    0FE1: 74 15                                 je decimal_founded
+[1343]        :                                       ; Multiplicar AX por 10 (base decimal)
+[1344]    0FE3: 03 C3                                 add ax, bx            ; Guardar el valor actual de AX en DX
+[1345]    0FE5: B9 0A 00                              mov cx, 10            ; Cargar el multiplicador en CX
+[1346]    0FE8: F7 E1                                 mul cx                ; Multiplicar AX por CX, resultado en AX
+[1347]    0FEA: 46                                    inc si                ; Mover al siguiente carï¿½cter
+[1348]    0FEB: EB EA                                 jmp convert_loop      ; Continuar con el siguiente carï¿½cter
+[1349]        :                                       
+[1350]    0FED:                                       done_conversion:
+[1351]    0FED: B9 0A 00                              MOV cx, 10            ; Cargar el multiplicador en CX
+[1352]    0FF0: F7 F1                                 DIV cx                ; Multiplicar AX por CX, resultado en AX
+[1353]    0FF2: A3 89 04                              MOV n_buffer_dec_baja, AX
+[1354]    0FF5: 33 C0                                 XOR AX, AX
+[1355]    0FF7: C3                                    ret
+[1356]        :                                       
+[1357]        :                                       
+[1358]    0FF8:                                       decimal_founded:
+[1359]    0FF8: B9 0A 00                              MOV cx, 10            ; Cargar el multiplicador en CX
+[1360]    0FFB: F7 F1                                 DIV cx                ; Multiplicar AX por CX, resultado en AX
+[1361]    0FFD: 46                                    INC si
+[1362]    0FFE: A3 85 04                              MOV n_buffer_ent_baja, AX
+[1363]    1001: 33 C0                                 XOR AX, AX
+[1364]    1003: EB D2                                 jmp convert_loop      ; Continuar con el siguiente carï¿½cter
+[1365]        :                                       
+[1366]        :                                       
+[1367]    1005:                                       MULTIPLICACION:
+[1368]        :                                       ;Parte 0 Limpliar las variables de resultado
+[1369]    1005: C7 06 AB 04 00 00                     MOV resultado_f_ent_alta, 0
+[1370]    100B: C7 06 AD 04 00 00                     MOV resultado_f_ent_baja, 0
+[1371]    1011: C7 06 AF 04 00 00                     MOV resultado_f_dec_alta, 0
+[1372]    1017: C7 06 B1 04 00 00                     MOV resultado_f_dec_baja, 0
+[1373]        :                                       
+[1374]    101D: C7 06 9B 04 00 00                     MOV resultado_1_ent_alta, 0
+[1375]    1023: C7 06 9D 04 00 00                     MOV resultado_1_ent_baja, 0
+[1376]    1029: C7 06 9F 04 00 00                     MOV resultado_1_dec_alta, 0
+[1377]    102F: C7 06 A1 04 00 00                     MOV resultado_1_dec_baja, 0
+[1378]        :                                       
+[1379]        :                                       
+[1380]    1035: C7 06 A3 04 00 00                     MOV resultado_2_ent_alta, 0
+[1381]    103B: C7 06 A5 04 00 00                     MOV resultado_2_ent_baja, 0
+[1382]    1041: C7 06 A7 04 00 00                     MOV resultado_2_dec_alta, 0
+[1383]    1047: C7 06 A9 04 00 00                     MOV resultado_2_dec_baja, 0
+[1384]        :                                       
+[1385]        :                                       ;Parte 1 de la multiplicacion (n1 por el entero de n2)
+[1386]        :                                       
+[1387]        :                                       ; Multiplicar la parte entera por el factor
+[1388]    104D: A1 8D 04                              MOV AX, n1_ent_baja                 ; Cargar la parte entera en AX
+[1389]    1050: 8B 1E 95 04                           MOV BX, n2_ent_baja                 ; Cargar el factor en BX
+[1390]    1054: F7 E3                                 MUL BX                              ; Multiplicar AX (intPart) por BX (factor)
+[1391]    1056: A3 9D 04                              MOV resultado_1_ent_baja, AX        ; Guardar el resultado en 'intResult'
+[1392]    1059: 01 16 9B 04                           ADD resultado_1_ent_alta, DX
+[1393]        :                                       
+[1394]        :                                       ;Para la parte alta del numero
+[1395]    105D: A1 8B 04                              MOV AX, n1_ent_alta
+[1396]    1060: F7 E3                                 MUL BX
+[1397]    1062: BB 10 27                              MOV BX, 10000
+[1398]    1065: F7 E3                                 MUL BX
+[1399]        :                                       ;Se guardara la parte alta en DX que deberemos sumar con la parte alta anterior
+[1400]        :                                       ;Mientras que la parte baja se guardara en AX y debemos sumarla con el anterior
+[1401]    1067: 01 06 9D 04                           ADD resultado_1_ent_baja, AX
+[1402]        :                                       ;Detecta si hubo un acarreo en la suma
+[1403]    106B: 73 03 E9 97 00                        JC acarreo_detectado_1
+[1404]        :                                       ;Si lo hay, suma 1 al registro DX
+[1405]        :                                       ;Si no lo hay continua
+[1406]    1070:                                       continuar_1:
+[1407]        :                                       
+[1408]    1070: 01 16 9B 04                           ADD resultado_1_ent_alta, DX
+[1409]        :                                       
+[1410]        :                                       ; Multiplicar la parte decimal por el factor
+[1411]    1074: A1 91 04                              MOV AX, n1_dec_baja                 ; Cargar la parte decimal en AX
+[1412]    1077: 8B 1E 95 04                           MOV BX, n2_ent_baja                 ; Cargar el factor en BX
+[1413]    107B: F7 E3                                 MUL BX                              ; Multiplicar AX (fracPart) por BX (factor)
+[1414]        :                                       ; AX ahora tiene el cociente (parte decimal ajustada) y DX tiene el resto (acarreo)
+[1415]        :                                       
+[1416]        :                                       ; Ajustar la parte decimal y manejar el acarreo
+[1417]    107D: BB 64 00                              MOV BX, 100                         ; Divisor para ajustar la parte decimal
+[1418]    1080: F7 F3                                 DIV BX                              ; Dividir AX (fracResult) por 100
+[1419]    1082: 89 16 A1 04                           MOV resultado_1_dec_baja, DX        ; Guardar la parte decimal ajustada en fracResult
+[1420]    1086: 8B D8                                 MOV BX, AX                          ; Guardar el resto (acarreo) en BX
+[1421]        :                                       
+[1422]        :                                       ; Combinar los resultados ajustados
+[1423]    1088: A1 9D 04                              MOV AX, resultado_1_ent_baja        ; Cargar el resultado de la parte entera
+[1424]    108B: 03 C3                                 ADD AX, BX                          ; Sumar el acarreo (parte decimal ajustada) al resultado de la parte entera
+[1425]    108D: A3 9D 04                              MOV resultado_1_ent_baja, AX        ; Guardar el resultado combinado en 'combinedResult'
+[1426]        :                                       
+[1427]        :                                       ;Prueba para verificar si la parte alta se guardo bien
+[1428]    1090: 8B 16 9B 04                           MOV DX, resultado_1_ent_alta
+[1429]        :                                       
+[1430]        :                                       ;Parte 2 de la multiplicacion (n1 por el decimal aumentado de n2)
+[1431]    1094: A1 8D 04                              MOV AX, n1_ent_baja                 ; Cargar la parte entera en AX
+[1432]    1097: 8B 1E 99 04                           MOV BX, n2_dec_baja                 ; Cargar el factor en BX
+[1433]    109B: F7 E3                                 MUL BX                              ; Multiplicar AX (intPart) por BX (factor)
+[1434]    109D: A3 A5 04                              MOV resultado_2_ent_baja, AX        ; Guardar el resultado en 'intResult'
+[1435]    10A0: 89 16 A3 04                           MOV resultado_2_ent_alta, DX
+[1436]        :                                       
+[1437]        :                                       ;Para la parte alta del numero
+[1438]    10A4: A1 8B 04                              MOV AX, n1_ent_alta
+[1439]    10A7: F7 E3                                 MUL BX
+[1440]    10A9: BB 10 27                              MOV BX, 10000
+[1441]    10AC: F7 E3                                 MUL BX
+[1442]        :                                       
+[1443]        :                                       ;Se guardara la parte alta en DX que deberemos sumar con la parte alta anterior
+[1444]        :                                       ;Mientras que la parte baja se guardara en AX y debemos sumarla con el anterior
+[1445]    10AE: 01 06 A5 04                           ADD resultado_2_ent_baja, AX
+[1446]        :                                       
+[1447]        :                                       ;Detecta si hubo un acarreo en la suma
+[1448]    10B2: 72 59                                 JC acarreo_detectado_2
+[1449]        :                                       ;Si lo hay, suma 1 al registro DX
+[1450]        :                                       ;Si no lo hay continua
+[1451]    10B4:                                       continuar_2:
+[1452]    10B4: 01 16 A3 04                           ADD resultado_2_ent_alta, DX
+[1453]        :                                       
+[1454]        :                                       ; Multiplicar la parte decimal por el factor
+[1455]    10B8: A1 91 04                              MOV AX, n1_dec_baja                 ; Cargar la parte decimal en AX
+[1456]    10BB: 8B 1E 99 04                           MOV BX, n2_dec_baja                 ; Cargar el factor en BX
+[1457]    10BF: F7 E3                                 MUL BX                              ; Multiplicar AX (fracPart) por BX (factor)
+[1458]        :                                       ; AX ahora tiene el cociente (parte decimal ajustada) y DX tiene el resto (acarreo)
+[1459]        :                                       
+[1460]        :                                       ; Ajustar la parte decimal y manejar el acarreo
+[1461]    10C1: BB 64 00                              MOV BX, 100                         ; Divisor para ajustar la parte decimal
+[1462]    10C4: F7 F3                                 DIV BX                              ; Dividir AX (fracResult) por 100
+[1463]    10C6: 89 16 A9 04                           MOV resultado_2_dec_baja, DX        ; Guardar la parte decimal ajustada en fracResult
+[1464]    10CA: 8B D8                                 MOV BX, AX                          ; Guardar el resto (acarreo) en BX
+[1465]        :                                       
+[1466]        :                                       ; Combinar los resultados ajustados
+[1467]    10CC: A1 A5 04                              MOV AX, resultado_2_ent_baja        ; Cargar el resultado de la parte entera
+[1468]    10CF: 03 C3                                 ADD AX, BX                          ; Sumar el acarreo (parte decimal ajustada) al resultado de la parte entera
+[1469]    10D1: A3 A5 04                              MOV resultado_2_ent_baja, AX        ; Guardar el resultado combinado en 'combinedResult'
+[1470]        :                                       
+[1471]        :                                       ;Prueba para verificar si la parte alta se guardo bien
+[1472]    10D4: 8B 16 A3 04                           MOV DX, resultado_2_ent_alta
+[1473]        :                                       
+[1474]        :                                       
+[1475]        :                                       ;Parte 3 de la multiplicacion (sumar la parte entera del paso anterior a la parte decimal del paso 1)
+[1476]    10D8: A1 A1 04                              MOV AX, resultado_1_dec_baja        ;Carga la parte entera del paso 1 en AX
+[1477]    10DB: 03 06 A5 04                           ADD AX, resultado_2_ent_baja        ;Suma la parte entera obtenida en el paso 2 al entero
+[1478]        :                                       
+[1479]    10DF: BB 64 00                              MOV BX, 100                         ;Mueve 100 a BX para realizar la division
+[1480]    10E2: F7 F3                                 DIV BX                              ;Divide el resultado entre 100
+[1481]        :                                       
+[1482]        :                                       ;En AX se guarda el acarreo que se debe sumar a la parte entera
+[1483]        :                                       ;En DX se guarda la parte decimal resultante del numero
+[1484]        :                                       
+[1485]    10E4: 01 06 AD 04                           ADD resultado_f_ent_baja, AX        ;Suma el acarreo al numero final
+[1486]    10E8: 01 16 B1 04                           ADD resultado_f_dec_baja, DX        ;Suma el resto al numero final
+[1487]        :                                       
+[1488]    10EC: A1 9D 04                              MOV AX, resultado_1_ent_baja        ;Mueve la parte baja entera del primer resultado a AX
+[1489]    10EF: 8B 16 9B 04                           MOV DX, resultado_1_ent_alta        ;Mueve la parte alta entera del primer resultado a DX
+[1490]        :                                       
+[1491]    10F3: 01 06 AD 04                           ADD resultado_f_ent_baja, AX        ;Suma el acarreo a la parte baja del numero final
+[1492]    10F7: 01 16 AB 04                           ADD resultado_f_ent_alta, DX        ;Suma la parte alta al numero final
+[1493]        :                                       
+[1494]        :                                       ;Muestra de prueba del resultado final
+[1495]    10FB: A1 AD 04                              MOV AX, resultado_f_ent_baja
+[1496]    10FE: 8B 16 AB 04                           MOV DX, resultado_f_ent_alta
+[1497]    1102: 8B 0E B1 04                           MOV CX, resultado_f_dec_baja
+[1498]        :                                       
+[1499]    1106: C3                                    RET
+[1500]        :                                       
+[1501]    1107:                                       acarreo_detectado_1:
+[1502]    1107: 83 C2 01                              ADD DX, 1
+[1503]    110A: E9 63 FF                              JMP continuar_1
+[1504]        :                                       
+[1505]    110D:                                       acarreo_detectado_2:
+[1506]    110D: 83 C2 01                              ADD DX, 1
+[1507]    1110: EB A2                                 JMP continuar_2
+[1508]        :                                       
+[1509]    1112:                                       PRINT_RESULT:
+[1510]        :                                       
+[1511]    1112: B4 09                                 MOV AH, 09h
+[1512]    1114: BA 4C 04                              LEA DX, perimetro
+[1513]    1117: CD 21                                 INT 21h
+[1514]        :                                       ; Imprimir la parte entera alta y baja
+[1515]    1119: 8B 16 BB 04                           MOV DX, perimetro_ent_alta   ; Parte alta de la parte entera
+[1516]    111D: A1 BD 04                              MOV AX, perimetro_ent_baja   ; Parte baja de la parte entera
+[1517]    1120: E8 47 00                              CALL PRINT_DWORD             ; Llama al procedimiento para imprimir 32 bits
+[1518]        :                                       
+[1519]        :                                       ; Imprimir el punto decimal
+[1520]    1123: B4 02                                 MOV AH, 02h
+[1521]    1125: B2 2E                                 MOV DL, '.'
+[1522]    1127: CD 21                                 INT 21h
+[1523]        :                                       
+[1524]        :                                       
+[1525]        :                                       ; Imprimir la parte decimal alta y baja
+[1526]    1129: 8B 16 BF 04                           MOV DX, perimetro_dec_alta   ; Parte alta de la parte decimal
+[1527]    112D: A1 C1 04                              MOV AX, perimetro_dec_baja   ; Parte baja de la parte decimal
+[1528]    1130: E8 37 00                              CALL PRINT_DWORD             ; Llama al procedimiento para imprimir 32 bits
+[1529]        :                                       
+[1530]        :                                       ; Salto de línea
+[1531]    1133: B4 09                                 MOV AH, 09h
+[1532]    1135: BA 1D 00                              LEA DX, newline
+[1533]    1138: CD 21                                 INT 21h
+[1534]        :                                       
+[1535]        :                                       
+[1536]        :                                       ; Salto de línea
+[1537]    113A: B4 09                                 MOV AH, 09h
+[1538]    113C: BA 1D 00                              LEA DX, newline
+[1539]    113F: CD 21                                 INT 21h
+[1540]        :                                       
+[1541]    1141: B4 09                                 MOV AH, 09h
+[1542]    1143: BA 42 04                              LEA DX, area
+[1543]    1146: CD 21                                 INT 21h
+[1544]        :                                       
+[1545]        :                                       
+[1546]        :                                       ; Imprimir el área de la misma forma
+[1547]    1148: 8B 16 B3 04                           MOV DX, area_ent_alta
+[1548]    114C: A1 B5 04                              MOV AX, area_ent_baja
+[1549]    114F: E8 18 00                              CALL PRINT_DWORD
+[1550]        :                                       
+[1551]        :                                       ; Imprimir el punto decimal
+[1552]    1152: B4 02                                 MOV AH, 02h
+[1553]    1154: B2 2E                                 MOV DL, '.'
+[1554]    1156: CD 21                                 INT 21h
+[1555]        :                                       
+[1556]        :                                       ; Imprimir la parte decimal
+[1557]    1158: 8B 16 B7 04                           MOV DX, area_dec_alta
+[1558]    115C: A1 B9 04                              MOV AX, area_dec_baja
+[1559]    115F: E8 08 00                              CALL PRINT_DWORD
+[1560]        :                                       
+[1561]        :                                       ; Salto de línea
+[1562]    1162: B4 09                                 MOV AH, 09h
+[1563]    1164: BA 1D 00                              LEA DX, newline
+[1564]    1167: CD 21                                 INT 21h
+[1565]        :                                       
+[1566]        :                                       
+[1567]    1169: C3                                    RET
+[1568]        :                                       
+[1569]    116A:                                       PRINT_DWORD:
+[1570]        :                                       ; Convierte un número de 32 bits (DX:AX) a ASCII y lo imprime
+[1571]        :                                       ; Se asume que DX tiene la parte alta y AX la parte baja
+[1572]        :                                       
+[1573]    116A: 52                                    PUSH DX            ; Guarda la parte alta en la pila
+[1574]    116B: 50                                    PUSH AX            ; Guarda la parte baja en la pila
+[1575]        :                                       
+[1576]    116C: B9 00 00                              MOV CX, 0          ; Inicializa el contador de dígitos
+[1577]        :                                       
+[1578]    116F:                                       DIVIDE_LOOP_32:
+[1579]    116F: BB 0A 00                              MOV BX, 10
+[1580]    1172: 33 D2                                 XOR DX, DX         ; Limpiar DX para dividir
+[1581]    1174: F7 F3                                 DIV BX             ; Divide AX entre 10, cociente en AX, resto en DX
+[1582]    1176: 80 C2 30                              ADD DL, '0'        ; Convertir el resto en carácter ASCII
+[1583]    1179: 52                                    PUSH DX            ; Guardar el dígito en la pila
+[1584]        :                                       
+[1585]    117A: 41                                    INC CX             ; Incrementar contador de dígitos
+[1586]    117B: 3D 00 00                              CMP AX, 0
+[1587]    117E: 75 EF                                 JNE DIVIDE_LOOP_32 ; Si el cociente no es 0, continuar dividiendo
+[1588]        :                                       
+[1589]    1180:                                       PRINT_DIGITS_32:
+[1590]    1180: 5A                                    POP DX             ; Obtener el dígito de la pila
+[1591]    1181: B4 02                                 MOV AH, 02h        ; Servicio para imprimir un carácter
+[1592]    1183: CD 21                                 INT 21h
+[1593]    1185: E2 F9                                 LOOP PRINT_DIGITS_32  ; Repetir hasta que se impriman todos los dígitos
+[1594]        :                                       
+[1595]    1187: 58                                    POP AX             ; Recupera la parte baja original
+[1596]    1188: 5A                                    POP DX             ; Recupera la parte alta original
+[1597]    1189: C3                                    RET
+[1598]        :                                       
+[1599]    118A:                                       LEER_CARACTERES_EN_EL_BUFFER:
+[1600]        :                                       ; Inicializa el puntero del buffer y limpia el buffer
+[1601]    118A: BF 78 04                              lea di, input_buffer
+[1602]    118D: C6 05 24                              mov byte ptr [di], '$'
+[1603]    1190: B9 00 00                              mov cx, 0          ; Contador de caracteres
+[1604]        :                                       ; Lee los caracteres del buffer
+[1605]    1193: E8 E0 FD                              call READ_LOOP
+[1606]        :                                       ; Convertir el buffer de entrada a numero entero
+[1607]    1196: BE 78 04                              lea si, input_buffer
+[1608]    1199: E8 36 FE                              call STR_TO_INT
+[1609]        :                                       
+[1610]        :                                       
+[1611]    119C:                                       CARGA_DE_VALORES_DEL_AREA:
+[1612]    119C: 89 16 B3 04                           MOV area_ent_alta, DX
+[1613]    11A0: A3 B5 04                              MOV area_ent_baja, AX
+[1614]    11A3: 89 0E B9 04                           MOV area_dec_baja, CX
+[1615]    11A7: C3                                    RET
+[1616]        :                                       
+[1617]    11A8:                                       CARGA_DE_VALORES_DE_PERIMETRO:
+[1618]    11A8: 89 16 BB 04                           MOV perimetro_ent_alta, DX
+[1619]    11AC: A3 BD 04                              MOV perimetro_ent_baja, AX
+[1620]    11AF: 89 0E C1 04                           MOV perimetro_dec_baja, CX
+[1621]    11B3: C3                                    RET
+[1622]        :                                       
+[1623]    11B4:                                       MENU_CONTINUAR:
+[1624]        :                                       ; Mostrar opciones del menu con saltos de linea
+[1625]    11B4: B4 09                                 mov ah, 09h
+[1626]    11B6: BA 82 01                              lea dx, continue_program
+[1627]    11B9: CD 21                                 int 21h
+[1628]    11BB: BA 1D 00                              lea dx, newline
+[1629]    11BE: CD 21                                 int 21h
+[1630]        :                                       
+[1631]    11C0: B4 09                                 mov ah, 09h
+[1632]    11C2: BA 98 01                              lea dx, close_program
+[1633]    11C5: CD 21                                 int 21h
+[1634]    11C7: BA 1D 00                              lea dx, newline
+[1635]    11CA: CD 21                                 int 21h
+[1636]        :                                       
+[1637]        :                                       ; Leer opcion del usuario
+[1638]    11CC: B4 01                                 mov ah, 01h       ; Funcion para leer un caracter del teclado
+[1639]    11CE: CD 21                                 int 21h
+[1640]    11D0: 8A D8                                 mov bl, al        ; Guardar el caracter leido en BL
+[1641]        :                                       
+[1642]        :                                       ; Mostrar salto de linea despues de leer la opcion
+[1643]    11D2: B4 09                                 mov ah, 09h
+[1644]    11D4: BA 1D 00                              lea dx, newline
+[1645]    11D7: CD 21                                 int 21h
+[1646]        :                                       
+[1647]        :                                       ; Manejo de opcion
+[1648]    11D9: 80 FB 31                              cmp bl, '1'
+[1649]    11DC: 75 03 E9 44 F4                        je start
+[1650]    11E1: 80 FB 32                              cmp bl, '2'
+[1651]    11E4: 75 03 E9 46 F7                        je end_program
+[1652]        :                                       
+[1653]        :                                       
+[1654]        :                                       main endp
+[1655]        :                                       end main
+[1656]        :                                       
+ 
+===================================================================================================
+ 
+EXE HEADER - bytes from 0000 to 01FF inclusive.
+
+0000: 4D      -   exe signature (M)
+0001: 5A      -   exe signature (Z)
+0002: E9      -   bytes on last page (l.byte)
+0003: 01      -   bytes on last page (h.byte)
+0004: 0A      -   512 byte pages in file (l.byte)
+0005: 00      -   512 byte pages in file (h.byte)
+0006: 01      -   relocations (l.byte)
+0007: 00      -   relocations (h.byte)
+0008: 20      -   paragraphs in header (l.byte)
+0009: 00      -   paragraphs in header (h.byte)
+000A: 00      -   minimum memory (l.byte)
+000B: 00      -   minimum memory (h.byte)
+000C: FF      -   maximum memory (l.byte)
+000D: FF      -   maximum memory (h.byte)
+000E: 00      -   SS - stack segment (l.byte)
+000F: 00      -   SS - stack segment (h.byte)
+0010: 00      -   SP - stack pointer (l.byte)
+0011: 01      -   SP - stack pointer (h.byte)
+0012: C5      -   check sum (l.byte)
+0013: EF      -   check sum (h.byte)
+0014: 00      -   IP - instruction pointer (l.byte)
+0015: 00      -   IP - instruction pointer (h.byte)
+0016: 62      -   CS - code segment (l.byte)
+0017: 00      -   CS - code segment (h.byte)
+0018: 1E      -   relocation table adress (l.byte)
+0019: 00      -   relocation table adress (h.byte)
+001A: 00      -   overlay number (l.byte)
+001B: 00      -   overlay number (h.byte)
+001C: 01      -   signature (l.byte)
+001D: 00      -   signature (h.byte)
+001E: 01      -   relocation table - offset inside segment (l.byte)
+001F: 00      -   relocation table - offset inside segment (h.byte)
+0020: 62      -   relocation table - segment anchor (l.byte)
+0021: 00      -   relocation table - segment anchor (h.byte)
+0022 to 01FF  -   reserved relocation area  (00) 
+
+
+
+
+===================================================================================================

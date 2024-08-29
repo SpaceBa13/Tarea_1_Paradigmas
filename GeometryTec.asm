@@ -1,4 +1,5 @@
-org 100h
+.model small
+.stack 100h
 
 .data            
     ;--------------------------------------VARIABLES PARA EL USO DEL PROGRAMA--------------------------------------
@@ -47,6 +48,8 @@ org 100h
     base_menor db 'Ingresa el valor de la base menor: $', 0Dh, 0Ah, '$'
     base_mayor db 'Ingresa el valor de la base mayor: $', 0Dh, 0Ah, '$'
     
+    area db 'Area: $', 0Dh, 0Ah, '$'
+    perimetro db 'Perimetro: $', 0Dh, 0Ah, '$'
      
     ;Mensajes de error
     mas_de_un_punto_decimal db 'Otro punto decinmal??? :v $', 0Dh, 0Ah, '$'
@@ -1504,6 +1507,10 @@ acarreo_detectado_2:
     JMP continuar_2
         
 PRINT_RESULT:
+
+    MOV AH, 09h
+    LEA DX, perimetro
+    INT 21h
     ; Imprimir la parte entera alta y baja
     MOV DX, perimetro_ent_alta   ; Parte alta de la parte entera
     MOV AX, perimetro_ent_baja   ; Parte baja de la parte entera
@@ -1514,15 +1521,27 @@ PRINT_RESULT:
     MOV DL, '.'
     INT 21h
     
+    
     ; Imprimir la parte decimal alta y baja
     MOV DX, perimetro_dec_alta   ; Parte alta de la parte decimal
     MOV AX, perimetro_dec_baja   ; Parte baja de la parte decimal
     CALL PRINT_DWORD             ; Llama al procedimiento para imprimir 32 bits
-
+       
+    ; Salto de línea
+    MOV AH, 09h
+    LEA DX, newline
+    INT 21h 
+   
+    
     ; Salto de línea
     MOV AH, 09h
     LEA DX, newline
     INT 21h
+    
+    MOV AH, 09h
+    LEA DX, area
+    INT 21h 
+   
     
     ; Imprimir el área de la misma forma
     MOV DX, area_ent_alta
@@ -1543,6 +1562,7 @@ PRINT_RESULT:
     MOV AH, 09h
     LEA DX, newline
     INT 21h
+   
     
     RET
 
